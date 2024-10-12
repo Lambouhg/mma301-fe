@@ -3,7 +3,7 @@ import { View, FlatList, StyleSheet, Text, TextInput, TouchableOpacity } from 'r
 import ProductCard from '../components/ProductCard';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { Button, Chip } from 'react-native-paper'; // Import Chip từ react-native-paper
+import { Chip } from 'react-native-paper';
 
 const HomeScreen = ({ navigation }) => {
     const [products, setProducts] = useState([]);
@@ -26,13 +26,17 @@ const HomeScreen = ({ navigation }) => {
         product.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
+    // Update: Navigate to ProductDetailScreen on product press
     const renderProductCard = ({ item }) => {
         return (
-            <ProductCard product={item} onPress={() => console.log(item.name)} />
+            <ProductCard 
+                product={item} 
+                onPress={() => navigation.navigate('ProductDetail', { product: item })} // Navigate to product detail
+            />
         );
     };
 
-    const brands = ["Nike", "Adidas", "Puma", "Reebok", "Under Armour"]; // Danh sách thương hiệu
+    const brands = ["Nike", "Adidas", "Puma", "Reebok", "Under Armour"]; // List of brands
 
     return (
         <View style={styles.container}>
@@ -72,12 +76,12 @@ const HomeScreen = ({ navigation }) => {
                     data={filteredProducts}
                     renderItem={renderProductCard}
                     keyExtractor={(item) => item._id}
-                    numColumns={3} // Hiển thị 3 sản phẩm mỗi hàng
+                    numColumns={2}
                     columnWrapperStyle={styles.row}
                     contentContainerStyle={styles.listContainer}
                 />
             )}
-            
+
             {/* Footer Section */}
             <View style={styles.footer}>
                 <TouchableOpacity>
@@ -130,15 +134,15 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         justifyContent: 'space-between',
         marginBottom: 20,
-        backgroundColor : '#FFCCCC',
+        backgroundColor: '#FFCCCC',
         borderRadius: 10,
     },
     brandChip: {
         margin: 4,
     },
     row: {
-        justifyContent: 'flex-start', // Căn lề trái
-        alignItems: 'flex-start', // Căn lề trên
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
     },
     listContainer: {
         paddingBottom: 20,
