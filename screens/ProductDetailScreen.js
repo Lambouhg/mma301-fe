@@ -1,41 +1,57 @@
-// /screens/ProductDetailScreen.js
-
-import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Image, StyleSheet, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { useAuth } from '../context/AuthContext';
+import axios from 'axios';
 
 const ProductDetailScreen = ({ route }) => {
-    const { product } = route.params; // Get the product passed as a parameter
+    const { product } = route.params; // Nhận thông tin sản phẩm từ params
+    const { user } = useAuth(); // Nhận thông tin người dùng đã đăng nhập
+    const [quantity, setQuantity] = useState(1); // Trạng thái cho số lượng sản phẩm
 
-    // Function to handle adding the product to the cart
-    const handleAddToCart = () => {
-        // Implement your logic for adding to the cart
-        Alert.alert('Thêm vào giỏ hàng', `${product.name} đã được thêm vào giỏ hàng!`);
-    };
+    const addToCart = async () => {
+        if (!user) {
+            Alert.alert("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.");
+            return;
+        }
 
-    // Function to handle the purchase action
-    const handleBuyNow = () => {
-        // Implement your logic for buying the product
-        Alert.alert('Mua ngay', `Bạn đã mua ${product.name}!`);
+        const dataToSend = {
+            productId: product._id,
+            quantity,
+        };
+
+        console.log("Adding to cart:", dataToSend); // Kiểm tra dữ liệu gửi đi
+
+        try {
+            const response = await axios.post(`https://mma301.onrender.com/cart/${user.id}`, dataToSend);
+            console.log("Response from API:", response.data); // Kiểm tra phản hồi từ API
+            Alert.alert("Sản phẩm đã được thêm vào giỏ hàng!", response.data.message);
+        } catch (error) {
+            console.error("Error adding to cart:", error); // In ra lỗi
+            Alert.alert("Lỗi khi thêm vào giỏ hàng:", error.response?.data?.message || "Đã xảy ra lỗi.");
+        }
     };
 
     return (
         <View style={styles.container}>
             <Image source={{ uri: product.imageUrl }} style={styles.image} />
-            <Text style={styles.name}>{product.name}</Text>
-            <Text style={styles.price}>${product.price}</Text>
-            <Text style={styles.description}>
-                {product.description ? product.description : 'Không có mô tả cho sản phẩm này.'}
-            </Text>
+            <Text style={styles.title}>{product.name}</Text>
+            <Text style={styles.price}>${product.price.toFixed(2)}</Text>
+            <Text style={styles.description}>{product.description}</Text>
 
-            {/* Footer with buttons */}
-            <View style={styles.footer}>
-                <TouchableOpacity style={styles.button} onPress={handleAddToCart}>
-                    <Text style={styles.buttonText}>Thêm vào giỏ hàng</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={handleBuyNow}>
-                    <Text style={styles.buttonText}>Mua ngay</Text>
-                </TouchableOpacity>
+            {/* Nhập số lượng */}
+            <View style={styles.quantityContainer}>
+                <Text>Số lượng:</Text>
+                <TextInput
+                    style={styles.quantityInput}
+                    value={String(quantity)}
+                    keyboardType="numeric"
+                    onChangeText={text => setQuantity(Number(text) || 1)} // Đảm bảo số lượng luôn là số
+                />
             </View>
+
+            <TouchableOpacity style={styles.addToCartButton} onPress={addToCart}>
+                <Text style={styles.buttonText}>Thêm vào giỏ hàng</Text>
+            </TouchableOpacity>
         </View>
     );
 };
@@ -43,47 +59,53 @@ const ProductDetailScreen = ({ route }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 16,
-        backgroundColor: '#fff',
+        padding: 20,
+        backgroundColor: '#f8f8f8',
     },
     image: {
         width: '100%',
-        height: 250,
+        height: 300,
         borderRadius: 10,
-        marginBottom: 16,
+        marginBottom: 15,
     },
-    name: {
+    title: {
         fontSize: 24,
         fontWeight: 'bold',
-        marginBottom: 8,
+        marginBottom: 10,
     },
     price: {
         fontSize: 20,
-        color: '#4CAF50',
-        marginBottom: 16,
+        color: '#28a745',
+        marginBottom: 10,
     },
     description: {
         fontSize: 16,
-        color: '#666',
-        marginBottom: 16,
+        color: '#333',
+        marginBottom: 20,
     },
-    footer: {
+    quantityContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginTop: 20,
-    },
-    button: {
-        flex: 1,
-        backgroundColor: '#007BFF',
-        borderRadius: 5,
-        padding: 15,
         alignItems: 'center',
-        marginHorizontal: 5,
+        marginBottom: 20,
+    },
+    quantityInput: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 5,
+        padding: 10,
+        width: 50,
+        textAlign: 'center',
+        marginLeft: 10,
+    },
+    addToCartButton: {
+        backgroundColor: '#007BFF',
+        padding: 15,
+        borderRadius: 5,
+        alignItems: 'center',
     },
     buttonText: {
         color: '#fff',
-        fontSize: 16,
-        fontWeight: 'bold',
+        fontSize: 18,
     },
 });
 
