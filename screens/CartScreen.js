@@ -1,30 +1,52 @@
-// /screens/CartScreen.js
-
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
 import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
 import ProductCard from '../components/ProductCard';
+import { useFocusEffect } from '@react-navigation/native'; // Thêm import này
 
 const CartScreen = ({ navigation }) => {
     const [cartItems, setCartItems] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const { user } = useAuth();
 
-    useEffect(() => {
-        // Fetch the cart items from the backend API
-        const fetchCartItems = async () => {
-            try {
-                const response = await axios.get('https://mma301.onrender.com/cart/{userId}');
-                setCartItems(response.data.products); // Assuming products are stored in cart
-            } catch (error) {
-                console.error("Error fetching cart items:", error);
-            }
-        };
+    const fetchCartItems = async () => {
+        if (!user) {
+            setLoading(false);
+            return;
+        }
 
-        fetchCartItems();
-    }, []);
+        try {
+            const response = await axios.get(`https://mma301.onrender.com/cart/${user.id}`);
+            setCartItems(response.data.products || []);
+        } catch (error) {
+            console.error("Lỗi khi lấy sản phẩm trong giỏ hàng:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useFocusEffect(
+        React.useCallback(() => {
+            fetchCartItems(); // Fetch cart items when the screen is focused
+        }, [user])
+    );
 
     const renderCartItem = ({ item }) => (
-        <ProductCard product={item.productId} onPress={() => console.log(item.productId.name)} />
+        <ProductCard 
+            product={item.productId} 
+            onPress={() => navigation.navigate('ProductDetail', { product: item.productId, refreshCart: fetchCartItems })} 
+        />
     );
+
+    if (loading) {
+        return (
+            <View style={styles.emptyContainer}>
+                <ActivityIndicator size="large" color="#0000ff" />
+                <Text style={styles.emptyText}>Đang tải giỏ hàng...</Text>
+            </View>
+        );
+    }
 
     return (
         <View style={styles.container}>
@@ -38,7 +60,7 @@ const CartScreen = ({ navigation }) => {
                     data={cartItems}
                     renderItem={renderCartItem}
                     keyExtractor={(item) => item.productId._id}
-                    numColumns={2} // Display 2 products per row
+                    numColumns={2}
                     columnWrapperStyle={styles.row}
                 />
             )}
@@ -72,3 +94,4 @@ const styles = StyleSheet.create({
 });
 
 export default CartScreen;
+5

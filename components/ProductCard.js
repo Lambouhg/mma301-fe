@@ -1,52 +1,40 @@
 // /components/ProductCard.js
 
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 
 const ProductCard = ({ product, onPress }) => {
-    const imageUrl = product.imageUrl ? product.imageUrl : 'https://via.placeholder.com/100'; // Default image URL
-
     return (
-        <TouchableOpacity style={styles.card} onPress={onPress}>
-            <Image source={{ uri: imageUrl }} style={styles.image} />
-            <View style={styles.info}>
-                <Text style={styles.title} numberOfLines={1}>{product.name}</Text>
-                <Text style={styles.price}>${product.price}</Text>
-            </View>
+        <TouchableOpacity onPress={onPress} style={styles.card}>
+            <Image source={{ uri: product.imageUrl }} style={styles.image} />
+            <Text style={styles.name}>{product.name}</Text>
+            <Text style={styles.price}>${product.price.toFixed(2)}</Text>
         </TouchableOpacity>
     );
 };
 
 const styles = StyleSheet.create({
     card: {
-        backgroundColor: '#fff',
+        flex: 1,
+        margin: 10,
         borderRadius: 10,
-        elevation: 3,
-        margin: 5, // Space between product cards
+        backgroundColor: '#fff',
         padding: 10,
-        flex: 1, // Expands to occupy available space
-        maxWidth: '50%', // Fits 2 cards in a row
-        height: 200, // Reduced height to make the card more compact
+        elevation: 2,
     },
     image: {
         width: '100%',
-        height: 100, // Adjusted height for image
+        height: 150,
         borderRadius: 10,
     },
-    info: {
-        marginTop: 8, // Adjusted spacing between image and text
-        alignItems: 'center',
-    },
-    title: {
-        fontSize: 16, // Slightly smaller font to fit within the compact card
+    name: {
+        fontSize: 16,
         fontWeight: 'bold',
-        textAlign: 'center',
+        marginVertical: 5,
     },
     price: {
+        color: '#28a745',
         fontSize: 14,
-        color: '#4CAF50',
-        marginVertical: 4,
-        textAlign: 'center',
     },
 });
 
