@@ -9,8 +9,10 @@ import HomeScreen from './screens/HomeScreen';
 import LoginScreen from './screens/LoginScreen';
 import SignupScreen from './screens/SignupScreen';
 import ProfileScreen from './screens/ProfileScreen';
+import ProductDetailScreen from './screens/ProductDetailScreen'; // Import ProductDetailScreen
+import CartScreen from './screens/CartScreen'; // Import CartScreen
 
-import Icon from 'react-native-vector-icons/Ionicons'; // Import icons
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -36,6 +38,15 @@ const TabNavigator = () => {
                     ),
                 }}
             />
+            <Tab.Screen
+                name="Cart"
+                component={CartScreen}
+                options={{
+                    tabBarIcon: ({ color, size }) => (
+                        <Icon name="cart-outline" color={color} size={size} />
+                    ),
+                }}
+            />
         </Tab.Navigator>
     );
 };
@@ -45,20 +56,25 @@ const App = () => {
         <AuthProvider>
             <NavigationContainer>
                 <Stack.Navigator initialRouteName="Login">
-                    <Stack.Screen 
-                        name="Login" 
-                        component={LoginScreen} 
-                        options={{ headerShown: false }} // Hide the header
+                    <Stack.Screen
+                        name="Login"
+                        component={LoginScreen}
+                        options={{ headerShown: false }}
                     />
-                    <Stack.Screen 
-                        name="Signup" 
-                        component={SignupScreen} 
-                        options={{ headerShown: false }} // Hide the header
+                    <Stack.Screen
+                        name="Signup"
+                        component={SignupScreen}
+                        options={{ headerShown: false }}
                     />
-                    <Stack.Screen 
-                        name="Main" 
-                        component={TabNavigator} 
-                        options={{ headerShown: false }} // Hide header for the main tab navigator
+                    <Stack.Screen
+                        name="Main"
+                        component={TabNavigator}
+                        options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                        name="ProductDetail" // Add ProductDetailScreen to the Stack Navigator
+                        component={ProductDetailScreen}
+                        options={{ title: 'Chi tiết sản phẩm' }}
                     />
                 </Stack.Navigator>
             </NavigationContainer>

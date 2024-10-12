@@ -4,7 +4,7 @@ import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 
 const ProductCard = ({ product, onPress }) => {
-    const imageUrl = product.imageUrl ? product.imageUrl : 'https://via.placeholder.com/100'; // Đường dẫn đến hình ảnh mặc định
+    const imageUrl = product.imageUrl ? product.imageUrl : 'https://via.placeholder.com/100'; // Default image URL
 
     return (
         <TouchableOpacity style={styles.card} onPress={onPress}>
@@ -12,7 +12,6 @@ const ProductCard = ({ product, onPress }) => {
             <View style={styles.info}>
                 <Text style={styles.title} numberOfLines={1}>{product.name}</Text>
                 <Text style={styles.price}>${product.price}</Text>
-                <Text style={styles.description} numberOfLines={2}>{product.description}</Text>
             </View>
         </TouchableOpacity>
     );
@@ -23,38 +22,31 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderRadius: 10,
         elevation: 3,
-        margin: 5, // Khoảng cách giữa các thẻ sản phẩm
+        margin: 5, // Space between product cards
         padding: 10,
-        flex: 1, // Thẻ có thể mở rộng để chiếm toàn bộ không gian
-        maxWidth: '30%', // Thay đổi chiều rộng để có 3 cột
-        height: 250, // Chiều cao cố định
+        flex: 1, // Expands to occupy available space
+        maxWidth: '50%', // Fits 2 cards in a row
+        height: 200, // Reduced height to make the card more compact
     },
     image: {
         width: '100%',
-        height: 110, // Giữ chiều cao cố định cho hình ảnh
+        height: 100, // Adjusted height for image
         borderRadius: 10,
     },
     info: {
-        marginTop: 10, // Giảm khoảng cách giữa các thành phần
+        marginTop: 8, // Adjusted spacing between image and text
         alignItems: 'center',
     },
     title: {
-        fontSize: 20,
+        fontSize: 16, // Slightly smaller font to fit within the compact card
         fontWeight: 'bold',
-        textAlign: 'center', // Căn giữa tiêu đề
-        overflow: 'hidden', // Ẩn nội dung tràn ra
+        textAlign: 'center',
     },
     price: {
         fontSize: 14,
         color: '#4CAF50',
-        marginVertical: 5,
-        textAlign: 'center', // Căn giữa giá
-    },
-    description: {
-        fontSize: 12,
-        color: '#666',
+        marginVertical: 4,
         textAlign: 'center',
-        overflow: 'hidden', // Ẩn nội dung tràn ra
     },
 });
 
