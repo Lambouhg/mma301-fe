@@ -1,11 +1,9 @@
-// /components/ProductCard.js
-
 import React from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 
-const ProductCard = ({ product, onPress }) => {
+const ProductCard = ({ product, isSelected, onPress }) => {
     return (
-        <TouchableOpacity onPress={onPress} style={styles.card}>
+        <TouchableOpacity onPress={onPress} style={[styles.card, isSelected ? styles.selectedCard : null]}>
             <Image source={{ uri: product.imageUrl }} style={styles.image} />
             <Text style={styles.name}>{product.name}</Text>
             <Text style={styles.price}>${product.price.toFixed(2)}</Text>
@@ -21,6 +19,10 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         padding: 10,
         elevation: 2,
+    },
+    selectedCard: {
+        borderColor: '#007bff', // Màu viền cho sản phẩm được chọn
+        borderWidth: 2,
     },
     image: {
         width: '100%',
