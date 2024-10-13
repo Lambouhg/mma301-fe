@@ -38,6 +38,9 @@ const ProductDetailScreen = ({ route }) => {
             <Text style={styles.price}>${product.price.toFixed(2)}</Text>
             <Text style={styles.description}>{product.description}</Text>
 
+            {/* Hiển thị số lượng tồn kho */}
+            <Text style={styles.stock}>Còn lại: {product.stock} sản phẩm</Text>
+
             {/* Nhập số lượng */}
             <View style={styles.quantityContainer}>
                 <Text>Số lượng:</Text>
@@ -107,6 +110,12 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 18,
     },
+    stock: {
+        fontSize: 16,
+        color: '#888',
+        marginBottom: 20,
+    },
+    
 });
 
 export default ProductDetailScreen;
