@@ -1,5 +1,3 @@
-// /App.js
-
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -12,7 +10,7 @@ import SignupScreen from './screens/SignupScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import ProductDetailScreen from './screens/ProductDetailScreen'; 
 import CartScreen from './screens/CartScreen'; 
-
+import OrderScreen from './screens/OrderScreen'; // Import OrderScreen
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const Stack = createNativeStackNavigator();
@@ -77,6 +75,11 @@ const App = () => {
                             name="ProductDetail"
                             component={ProductDetailScreen}
                             options={{ title: 'Chi tiết sản phẩm' }}
+                        />
+                        <Stack.Screen
+                            name="Order" // Đảm bảo rằng OrderScreen đã được thêm vào đây
+                            component={OrderScreen}
+                            options={{ title: 'Đơn hàng' }} // Tiêu đề của OrderScreen
                         />
                     </Stack.Navigator>
                 </NavigationContainer>
