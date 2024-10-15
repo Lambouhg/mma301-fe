@@ -13,7 +13,7 @@ import CartScreen from './screens/CartScreen';
 import OrderScreen from './screens/OrderScreen'; // Import OrderScreen
 import Icon from 'react-native-vector-icons/Ionicons';
 import PaymentScreen from './screens/PaymentScreen';
-import ListOrderScreen from './screens/ListOderScreen';
+import ListOrderScreen from './screens/ListOrderScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
