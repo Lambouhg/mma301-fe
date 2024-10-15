@@ -20,8 +20,7 @@ const CartScreen = ({ navigation }) => {
         try {
             const response = await axios.get(`https://mma301.onrender.com/cart/${user.id}`);
             setCartItems(response.data.products || []);
-        } catch (error) {
-            console.error("Lỗi khi lấy sản phẩm trong giỏ hàng:", error);
+        } catch (error) {           
         } finally {
             setLoading(false);
         }
