@@ -10,10 +10,11 @@ import SignupScreen from './screens/SignupScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import ProductDetailScreen from './screens/ProductDetailScreen';
 import CartScreen from './screens/CartScreen';
-import OrderScreen from './screens/OrderScreen'; // Import OrderScreen
-import Icon from 'react-native-vector-icons/Ionicons';
+import OrderScreen from './screens/OrderScreen';
 import PaymentScreen from './screens/PaymentScreen';
 import ListOrderScreen from './screens/ListOrderScreen';
+import ChatSupport from './screens/ChatSupport'; // Import ChatSupport screen
+import Icon from 'react-native-vector-icons/Ionicons';
 import EditProfileScreen from './screens/EditProfileScreen';
 
 const Stack = createNativeStackNavigator();
@@ -85,9 +86,9 @@ const App = () => {
                             options={{ title: 'Danh sách đơn hàng' }}
                         />
                         <Stack.Screen
-                            name="Order" // Đảm bảo rằng OrderScreen đã được thêm vào đây
+                            name="Order"
                             component={OrderScreen}
-                            options={{ title: 'Mua hàng' }} // Tiêu đề của OrderScreen
+                            options={{ title: 'Mua hàng' }}
                         />
                         <Stack.Screen
                             name="Payment"
@@ -99,6 +100,11 @@ const App = () => {
                             component={EditProfileScreen}
                             options={{ title: 'Update Profile' }}
                         />
+                        <Stack.Screen
+                            name="ChatSupport" // Add ChatSupport here
+                            component={ChatSupport}
+                            options={{ title: 'Hỗ trợ chat' }} // Set title for ChatSupport
+                        />
                     </Stack.Navigator>
                 </NavigationContainer>
             </CartProvider>
@@ -106,4 +112,4 @@ const App = () => {
     );
 };
 
-export default App;
+export default App; 
