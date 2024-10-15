@@ -8,12 +8,13 @@ import HomeScreen from './screens/HomeScreen';
 import LoginScreen from './screens/LoginScreen';
 import SignupScreen from './screens/SignupScreen';
 import ProfileScreen from './screens/ProfileScreen';
-import ProductDetailScreen from './screens/ProductDetailScreen'; 
-import CartScreen from './screens/CartScreen'; 
+import ProductDetailScreen from './screens/ProductDetailScreen';
+import CartScreen from './screens/CartScreen';
 import OrderScreen from './screens/OrderScreen'; // Import OrderScreen
 import Icon from 'react-native-vector-icons/Ionicons';
 import PaymentScreen from './screens/PaymentScreen';
 import ListOrderScreen from './screens/ListOrderScreen';
+import EditProfileScreen from './screens/EditProfileScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -91,8 +92,13 @@ const App = () => {
                         <Stack.Screen
                             name="Payment"
                             component={PaymentScreen}
-                            options={{ title: 'Thanh toán'}}
-                            />
+                            options={{ title: 'Thanh toán' }}
+                        />
+                        <Stack.Screen
+                            name="EditProfile"
+                            component={EditProfileScreen}
+                            options={{ title: 'Update Profile' }}
+                        />
                     </Stack.Navigator>
                 </NavigationContainer>
             </CartProvider>
