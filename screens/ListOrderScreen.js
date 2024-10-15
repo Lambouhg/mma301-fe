@@ -1,22 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
 
 const ListOrderScreen = () => {
+  const { user } = useAuth();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigation = useNavigation();
 
   useEffect(() => {
-    fetchOrders();
-  }, []);
+    if (user) {
+      fetchOrders();
+    }
+  }, [user]);
 
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('https://mma301.onrender.com/orders');
+      const response = await axios.get(`https://mma301.onrender.com/orders/user/${user.id}`);
       setOrders(response.data);
       setError(null);
     } catch (err) {
@@ -33,8 +37,8 @@ const ListOrderScreen = () => {
       onPress={() => navigation.navigate('Order', { orderId: item._id })}
     >
       <Text style={styles.orderTitle}>Đơn hàng #{item._id}</Text>
-      <Text style={styles.orderDate}>Ngày: {new Date(item.createdAt).toLocaleDateString()}</Text>
-      <Text style={styles.orderTotal}>Tổng tiền: {item.totalPrice.toLocaleString()} đ</Text>
+      <Text style={styles.orderDate}>Ngày: {new Date(item.date).toLocaleDateString()}</Text>
+      <Text style={styles.orderTotal}>Tổng tiền: {item.totalPrice.toLocaleString()}</Text>
     </TouchableOpacity>
   );
 
