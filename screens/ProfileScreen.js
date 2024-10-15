@@ -3,6 +3,7 @@ import { View, StyleSheet, Alert, ScrollView } from 'react-native';
 import { Text, ActivityIndicator, Card, Title, Paragraph, Button } from 'react-native-paper';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
+import Icon from 'react-native-vector-icons/MaterialIcons'; // Import icon
 
 const ProfileScreen = ({ navigation, route }) => {
     const { user, logout } = useAuth();
@@ -13,7 +14,6 @@ const ProfileScreen = ({ navigation, route }) => {
         fetchProfile();
     }, [user]);
 
-    // Kiểm tra xem có flag updated không để refresh lại dữ liệu
     useEffect(() => {
         if (route.params?.updated) {
             fetchProfile();
@@ -62,22 +62,38 @@ const ProfileScreen = ({ navigation, route }) => {
         <ScrollView style={styles.container}>
             <Card style={styles.card}>
                 <Card.Content>
-                    <Title style={styles.title}>Profile</Title>
-                    <Paragraph>Username: {profileData.username}</Paragraph>
-                    <Paragraph>Email: {profileData.email}</Paragraph>
-                    <Paragraph>Phone Number: {profileData.phoneNumber}</Paragraph>
-                    <Paragraph>Address: {profileData.address}</Paragraph>
-                    <Paragraph>Account Created: {new Date(profileData.createdAt).toLocaleDateString()}</Paragraph>
+                    <Title style={styles.title}>Profile Information</Title>
+                    <Paragraph style={styles.profileInfo}>
+                        <Icon name="person" size={18} color="#007bff" /> Username: {profileData.username}
+                    </Paragraph>
+                    <Paragraph style={styles.profileInfo}>
+                        <Icon name="email" size={18} color="#007bff" /> Email: {profileData.email}
+                    </Paragraph>
+                    <Paragraph style={styles.profileInfo}>
+                        <Icon name="phone" size={18} color="#007bff" /> Phone Number: {profileData.phoneNumber}
+                    </Paragraph>
+                    <Paragraph style={styles.profileInfo}>
+                        <Icon name="home" size={18} color="#007bff" /> Address: {profileData.address}
+                    </Paragraph>
+                    <Paragraph style={styles.profileInfo}>
+                        <Icon name="calendar-today" size={18} color="#007bff" /> Account Created: {new Date(profileData.createdAt).toLocaleDateString()}
+                    </Paragraph>
                     <Button 
                         mode="contained" 
                         onPress={() => navigation.navigate('EditProfile', { profileData })} 
                         style={styles.editButton}
+                        icon="pencil" // Add icon to button
                     >
                         Edit Profile
                     </Button>
                 </Card.Content>
             </Card>
-            <Button mode="contained" onPress={handleLogout} style={styles.logoutButton}>
+            <Button 
+                mode="contained" 
+                onPress={handleLogout} 
+                style={styles.logoutButton}
+                icon="logout" // Add icon to button
+            >
                 Logout
             </Button>
         </ScrollView>
@@ -98,12 +114,27 @@ const styles = StyleSheet.create({
     card: {
         padding: 20,
         marginVertical: 20,
-        elevation: 3,
+        borderRadius: 10,
+        backgroundColor: '#fff',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 5,
+        elevation: 5,
     },
     title: {
-        fontSize: 24,
+        fontSize: 26,
         fontWeight: 'bold',
+        marginBottom: 20,
+        textAlign: 'center',
+        color: '#333',
+    },
+    profileInfo: {
+        fontSize: 16,
         marginBottom: 10,
+        color: '#555',
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     editButton: {
         marginTop: 20,
