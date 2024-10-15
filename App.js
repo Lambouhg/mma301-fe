@@ -12,6 +12,8 @@ import ProductDetailScreen from './screens/ProductDetailScreen';
 import CartScreen from './screens/CartScreen'; 
 import OrderScreen from './screens/OrderScreen'; // Import OrderScreen
 import Icon from 'react-native-vector-icons/Ionicons';
+import PaymentScreen from './screens/PaymentScreen';
+import ListOrderScreen from './screens/ListOrderScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -77,10 +79,20 @@ const App = () => {
                             options={{ title: 'Chi tiết sản phẩm' }}
                         />
                         <Stack.Screen
+                            name="ListOrder"
+                            component={ListOrderScreen}
+                            options={{ title: 'Danh sách đơn hàng' }}
+                        />
+                        <Stack.Screen
                             name="Order" // Đảm bảo rằng OrderScreen đã được thêm vào đây
                             component={OrderScreen}
-                            options={{ title: 'Đơn hàng' }} // Tiêu đề của OrderScreen
+                            options={{ title: 'Mua hàng' }} // Tiêu đề của OrderScreen
                         />
+                        <Stack.Screen
+                            name="Payment"
+                            component={PaymentScreen}
+                            options={{ title: 'Thanh toán'}}
+                            />
                     </Stack.Navigator>
                 </NavigationContainer>
             </CartProvider>

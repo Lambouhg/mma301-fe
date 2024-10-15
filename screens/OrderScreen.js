@@ -3,13 +3,13 @@ import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity, 
 import axios from 'axios';
 
 const OrderScreen = ({ route, navigation }) => {
-    const { orderId } = route.params; // Nhận orderId từ tham số
+    const { orderId } = route.params;
     const [orderDetails, setOrderDetails] = useState(null);
     const [loading, setLoading] = useState(true);
 
     const fetchProductDetails = async (productIds) => {
         const productDetailsPromises = productIds.map(productId =>
-            axios.get(`https://mma301.onrender.com/products/${productId}`) // API để lấy thông tin sản phẩm
+            axios.get(`https://mma301.onrender.com/products/${productId}`)
         );
         const productDetailsResponses = await Promise.all(productDetailsPromises);
         return productDetailsResponses.map(response => response.data);
@@ -18,14 +18,12 @@ const OrderScreen = ({ route, navigation }) => {
     const fetchOrderDetails = async () => {
         try {
             const response = await axios.get(`https://mma301.onrender.com/orders/${orderId}`);
-            console.log(response.data); // In dữ liệu ra console
+            console.log(response.data);
 
-            // Lấy thông tin chi tiết sản phẩm
             const productsWithDetails = await fetchProductDetails(response.data.products.map(item => item.productId));
-            // Ghép thông tin sản phẩm với thông tin đơn hàng
             const productsWithFullDetails = response.data.products.map((item, index) => ({
                 ...item,
-                productId: productsWithDetails[index], // Thay thế bằng thông tin sản phẩm đầy đủ
+                productId: productsWithDetails[index],
             }));
 
             setOrderDetails({ ...response.data, products: productsWithFullDetails });
@@ -41,8 +39,8 @@ const OrderScreen = ({ route, navigation }) => {
     }, [orderId]);
 
     const renderProductDetail = ({ item }) => {
-        const productPrice = item.productId.price; // Lưu giá sản phẩm từ productId
-        const totalProductPrice = productPrice * item.quantity; // Tính tổng giá cho từng sản phẩm
+        const productPrice = item.productId.price;
+        const totalProductPrice = productPrice * item.quantity;
         return (
             <View style={styles.productContainer}>
                 <Image source={{ uri: item.productId.imageUrl }} style={styles.productImage} />
@@ -53,6 +51,10 @@ const OrderScreen = ({ route, navigation }) => {
                 </View>
             </View>
         );
+    };
+
+    const handlePayment = () => {
+        navigation.navigate('Payment', { orderDetails });
     };
 
     if (loading) {
@@ -81,8 +83,7 @@ const OrderScreen = ({ route, navigation }) => {
                 keyExtractor={(item) => item.productId._id}
             />
             <Text style={styles.totalPrice}>Tổng tiền: {orderDetails.totalPrice.toFixed(2)} đ</Text>
-            {/* Thêm nút thanh toán nếu cần */}
-            <TouchableOpacity style={styles.paymentButton} onPress={() => {/* Logic thanh toán */}}>
+            <TouchableOpacity style={styles.paymentButton} onPress={handlePayment}>
                 <Text style={styles.paymentButtonText}>Thanh toán</Text>
             </TouchableOpacity>
         </View>
