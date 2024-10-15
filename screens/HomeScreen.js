@@ -4,6 +4,7 @@ import ProductCard from '../components/ProductCard';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Chip } from 'react-native-paper';
+import ChatIcon from '../components/ChatIcon'; // Import the ChatIcon component
 
 const HomeScreen = ({ navigation }) => {
     const [products, setProducts] = useState([]);
@@ -33,6 +34,10 @@ const HomeScreen = ({ navigation }) => {
                 onPress={() => navigation.navigate('ProductDetail', { product: item })}
             />
         );
+    };
+
+    const handleChatPress = () => {
+        navigation.navigate('ChatSupport'); // Navigate to your chat support screen
     };
 
     const brands = ["Nike", "Adidas", "Puma", "Reebok", "Under Armour"];
@@ -81,6 +86,9 @@ const HomeScreen = ({ navigation }) => {
                 />
             )}
 
+            {/* Chat Icon */}
+            <ChatIcon onPress={handleChatPress} />
+
             {/* Footer Section */}
             <View style={styles.footer}>               
                 <TouchableOpacity onPress={() => navigation.navigate('ListOrder')}>
@@ -91,6 +99,7 @@ const HomeScreen = ({ navigation }) => {
     );
 };
 
+// ... (your existing styles here)
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -167,5 +176,4 @@ const styles = StyleSheet.create({
     },
     
 });
-
 export default HomeScreen;
