@@ -26,17 +26,16 @@ const HomeScreen = ({ navigation }) => {
         product.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    // Update: Navigate to ProductDetailScreen on product press
     const renderProductCard = ({ item }) => {
         return (
             <ProductCard 
                 product={item} 
-                onPress={() => navigation.navigate('ProductDetail', { product: item })} // Navigate to product detail
+                onPress={() => navigation.navigate('ProductDetail', { product: item })}
             />
         );
     };
 
-    const brands = ["Nike", "Adidas", "Puma", "Reebok", "Under Armour"]; // List of brands
+    const brands = ["Nike", "Adidas", "Puma", "Reebok", "Under Armour"];
 
     return (
         <View style={styles.container}>
@@ -83,9 +82,9 @@ const HomeScreen = ({ navigation }) => {
             )}
 
             {/* Footer Section */}
-            <View style={styles.footer}>
-                <TouchableOpacity>
-                    <Text style={styles.footerText}>Xem tất cả sản phẩm</Text>
+            <View style={styles.footer}>               
+                <TouchableOpacity onPress={() => navigation.navigate('ListOrder')}>
+                    <Text style={styles.footerText}>Đơn hàng</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -157,13 +156,16 @@ const styles = StyleSheet.create({
         color: '#666',
     },
     footer: {
-        marginTop: 20,
-        alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        padding: 10,
+        backgroundColor: '#f8f8f8',
     },
     footerText: {
+        color: '#007bff',
         fontSize: 16,
-        color: '#007BFF',
     },
+    
 });
 
 export default HomeScreen;
