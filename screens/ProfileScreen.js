@@ -65,6 +65,8 @@ const ProfileScreen = ({ navigation }) => {
                     <Title style={styles.title}>Profile</Title>
                     <Paragraph>Username: {profileData.username}</Paragraph>
                     <Paragraph>Email: {profileData.email}</Paragraph>
+                    <Paragraph>Phone Number: {profileData.phoneNumber}</Paragraph>
+                    <Paragraph>Address: {profileData.address}</Paragraph>
                     <Paragraph>Account Created: {new Date(profileData.createdAt).toLocaleDateString()}</Paragraph>
                 </Card.Content>
             </Card>
