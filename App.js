@@ -4,7 +4,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
-import OrderDetailsScreen from './screens/OrderDetailsScreen';
 import HomeScreen from './screens/HomeScreen';
 import LoginScreen from './screens/LoginScreen';
 import SignupScreen from './screens/SignupScreen';
@@ -106,10 +105,6 @@ const App = () => {
                             component={ChatSupport}
                             options={{ title: 'Hỗ trợ chat' }} // Set title for ChatSupport
                         />
-                         <Stack.Screen name="OrderDetails" 
-                         component={OrderDetailsScreen} 
-                         options={{ title: 'Chi tiết Đơn hàng' }} 
-                         />
                     </Stack.Navigator>
                 </NavigationContainer>
             </CartProvider>

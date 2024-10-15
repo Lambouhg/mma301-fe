@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
-import { useAuth } from '../context/AuthContext';  // Sử dụng useAuth từ AuthContext
-import { Card, Button } from 'react-native-paper';
+import { useAuth } from '../context/AuthContext';
 
 const ListOrderScreen = () => {
-  const { user } = useAuth();  // Lấy thông tin user từ AuthContext
+  const { user } = useAuth();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -14,14 +13,13 @@ const ListOrderScreen = () => {
 
   useEffect(() => {
     if (user) {
-      fetchOrders();  // Gọi hàm lấy danh sách đơn hàng nếu người dùng đã đăng nhập
+      fetchOrders();
     }
   }, [user]);
 
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      // Sử dụng user.id để lấy danh sách đơn hàng từ API
       const response = await axios.get(`https://mma301.onrender.com/orders/user/${user.id}`);
       setOrders(response.data);
       setError(null);
@@ -34,45 +32,14 @@ const ListOrderScreen = () => {
   };
 
   const renderOrderItem = ({ item }) => (
-    <Card 
-      style={styles.orderCard} 
-      onPress={() => navigation.navigate('OrderDetails', { order: item, user: user })}  // Truyền thông tin order và user
+    <TouchableOpacity 
+      style={styles.orderItem}
+      onPress={() => navigation.navigate('Order', { orderId: item._id })}
     >
-      <Card.Content>
-        <Text style={styles.orderTitle}>Đơn hàng #{item._id}</Text>
-        <Text style={styles.orderDate}>Ngày: {new Date(item.date).toLocaleDateString()}</Text>
-        <Text style={styles.orderTotal}>Tổng tiền: {item.totalPrice.toLocaleString()} VND</Text>
-
-        {/* Kiểm tra nếu có thông tin shippingAddress thì hiển thị */}
-        {item.shippingAddress ? (
-          <Text style={styles.orderInfo}>
-            Địa chỉ giao hàng: {item.shippingAddress.address}, {item.shippingAddress.city}, {item.shippingAddress.postalCode}, {item.shippingAddress.country}
-          </Text>
-        ) : (
-          <Text style={styles.orderInfo}>Địa chỉ giao hàng: Chưa cung cấp</Text>
-        )}
-
-        {/* Hiển thị danh sách sản phẩm trong đơn hàng */}
-        <View style={styles.productList}>
-          <Text style={styles.productListTitle}>Sản phẩm:</Text>
-          {Array.isArray(item.orderItems) && item.orderItems.length > 0 ? (
-            item.orderItems.map((product, index) => (
-              <View key={index} style={styles.productItem}>
-                <Text>{product.name} - Số lượng: {product.qty}</Text>
-                <Text>Giá: {product.price.toLocaleString()} VND</Text>
-              </View>
-            ))
-          ) : (
-            <Text>Không có sản phẩm nào trong đơn hàng.</Text> // Handle case when there are no products
-          )}
-        </View>
-      </Card.Content>
-      <Card.Actions>
-        <Button mode="contained" onPress={() => navigation.navigate('OrderDetails', { order: item, user: user })}>
-          Xem Chi Tiết
-        </Button>
-      </Card.Actions>
-    </Card>
+      <Text style={styles.orderTitle}>Đơn hàng #{item._id}</Text>
+      <Text style={styles.orderDate}>Ngày: {new Date(item.date).toLocaleDateString()}</Text>
+      <Text style={styles.orderTotal}>Tổng tiền: {item.totalPrice.toLocaleString()}</Text>
+    </TouchableOpacity>
   );
 
   if (loading) {
@@ -127,7 +94,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  orderCard: {
+  orderItem: {
+    padding: 15,
     marginBottom: 10,
     backgroundColor: '#fff',
     borderRadius: 5,
@@ -152,15 +120,6 @@ const styles = StyleSheet.create({
     color: '#28a745',
     marginTop: 5,
   },
-  productList: {
-    marginTop: 10,
-  },
-  productListTitle: {
-    fontWeight: 'bold',
-  },
-  productItem: {
-    marginTop: 5,
-  },
   errorText: {
     color: 'red',
     marginBottom: 10,
@@ -176,4 +135,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ListOrderScreen; 
+export default ListOrderScreen;
