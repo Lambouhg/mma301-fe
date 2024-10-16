@@ -88,12 +88,6 @@ const HomeScreen = ({ navigation }) => {
             )}
 
             <ChatIcon onPress={handleChatPress} />
-
-            <View style={styles.footer}>
-                <TouchableOpacity onPress={() => navigation.navigate('ListOrder')}>
-                    <Text style={styles.footerText}>Orders</Text>
-                </TouchableOpacity>
-            </View>
         </View>
     );
 };
