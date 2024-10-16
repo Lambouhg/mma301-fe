@@ -51,6 +51,15 @@ const TabNavigator = () => {
                     ),
                 }}
             />
+            <Tab.Screen
+                name="List Order"
+                component={ListOrderScreen}
+                options={{
+                    tabBarIcon: ({ color, size }) => (
+                        <Icon name="cart-outline" color={color} size={size} />
+                    ),
+                }}
+            />            
         </Tab.Navigator>
     );
 };
@@ -80,11 +89,6 @@ const App = () => {
                             name="ProductDetail"
                             component={ProductDetailScreen}
                             options={{ title: 'Chi tiết sản phẩm' }}
-                        />
-                        <Stack.Screen
-                            name="ListOrder"
-                            component={ListOrderScreen}
-                            options={{ title: 'Danh sách đơn hàng' }}
                         />
                         <Stack.Screen
                             name="Order"
