@@ -82,9 +82,17 @@ const ProfileScreen = ({ navigation, route }) => {
                         mode="contained" 
                         onPress={() => navigation.navigate('EditProfile', { profileData })} 
                         style={styles.editButton}
-                        icon="pencil" // Add icon to button
+                        icon="pencil" 
                     >
                         Edit Profile
+                    </Button>
+                    <Button 
+                        mode="contained" 
+                        onPress={() => navigation.navigate('EditPassword')} 
+                        style={styles.editPasswordButton}
+                        icon="lock-outline"
+                    >
+                        Edit Password
                     </Button>
                 </Card.Content>
             </Card>
@@ -92,7 +100,7 @@ const ProfileScreen = ({ navigation, route }) => {
                 mode="contained" 
                 onPress={handleLogout} 
                 style={styles.logoutButton}
-                icon="logout" // Add icon to button
+                icon="logout"
             >
                 Logout
             </Button>
@@ -139,6 +147,10 @@ const styles = StyleSheet.create({
     editButton: {
         marginTop: 20,
         backgroundColor: '#4caf50',
+    },
+    editPasswordButton: {
+        marginTop: 10,
+        backgroundColor: '#1976d2',
     },
     logoutButton: {
         marginTop: 20,
