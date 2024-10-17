@@ -18,6 +18,7 @@ import ChatSupport from './screens/ChatSupport'; // Import ChatSupport screen
 import Icon from 'react-native-vector-icons/Ionicons';
 import EditProfileScreen from './screens/EditProfileScreen';
 import EditPasswordScreen from './screens/EditPassword';
+import EditAddressScreen from './screens/EditAddressScreen'; // Import EditAddressScreen
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -107,19 +108,25 @@ const App = () => {
                             options={{ title: 'Update Profile' }}
                         />
                         <Stack.Screen
+                            name="EditAddress" // Thêm route cho EditAddressScreen
+                            component={EditAddressScreen}
+                            options={{ title: 'Chỉnh sửa địa chỉ' }}
+                        />
+                        <Stack.Screen
                             name="ChatSupport"
                             component={ChatSupport}
                             options={{ title: 'Hỗ trợ chat' }}
                         />
-                        <Stack.Screen name="OrderDetails" 
+                        <Stack.Screen 
+                            name="OrderDetails" 
                             component={OrderDetailsScreen} 
                             options={{ title: 'Chi tiết Đơn hàng' }} 
                         />
-                        <Stack.Screen name="EditPassword" 
+                        <Stack.Screen 
+                            name="EditPassword" 
                             component={EditPasswordScreen} 
                             options={{ title: 'Đổi mật khẩu' }}
                         />
-
                     </Stack.Navigator>
                 </NavigationContainer>
             </CartProvider>
