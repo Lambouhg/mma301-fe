@@ -22,17 +22,11 @@ const CartScreen = ({ navigation }) => {
             const response = await axios.get(`https://mma301.onrender.com/cart/${user.id}`);
             setCartItems(response.data.products || []);
         } catch (error) {
-            if (error.response && error.response.status === 404) {
-                console.warn('Cart not found for user:', user.id);
-                setCartItems([]); // Treat as an empty cart
-            } else {
-                console.error('Error fetching cart items:', error);
-                Alert.alert('Error', 'Failed to load cart items. Please try again.');
-            }
+            console.error('Error fetching cart items:', error);
+            Alert.alert('Error', 'Failed to load cart items. Please try again.');
         } finally {
             setLoading(false);
         }
-        
     };
 
     useFocusEffect(
@@ -52,7 +46,7 @@ const CartScreen = ({ navigation }) => {
             return newSelectedItems;
         });
     };
-    
+
     const selectAllItems = () => {
         if (selectedItems.size === cartItems.length) {
             setSelectedItems(new Set());
@@ -62,20 +56,52 @@ const CartScreen = ({ navigation }) => {
         }
     };
 
-    const incrementQuantity = (itemId) => {
-        setCartItems((prevItems) => 
-            prevItems.map(item => 
-                item.productId._id === itemId ? { ...item, quantity: item.quantity + 1 } : item
-            )
-        );
-    };
+    const incrementQuantity = async (itemId) => {
+        const updatedItem = cartItems.find(item => item.productId._id === itemId);
+        if (updatedItem) {
+            const newQuantity = updatedItem.quantity + 1;
 
-    const decrementQuantity = (itemId) => {
-        setCartItems((prevItems) => 
-            prevItems.map(item => 
-                item.productId._id === itemId && item.quantity > 1 ? { ...item, quantity: item.quantity - 1 } : item
-            )
-        );
+            // Update quantity in state
+            setCartItems((prevItems) => 
+                prevItems.map(item => 
+                    item.productId._id === itemId ? { ...item, quantity: newQuantity } : item
+                )
+            );
+
+            // Send request to update quantity on server
+            try {
+                await axios.put(`https://mma301.onrender.com/cart/${user.id}/${itemId}/update`, {
+                    quantity: newQuantity,
+                });
+            } catch (error) {
+                console.error('Error updating quantity:', error);
+                Alert.alert('Error', 'Failed to update quantity. Please try again.');
+            }
+        }
+    };
+    
+    const decrementQuantity = async (itemId) => {
+        const updatedItem = cartItems.find(item => item.productId._id === itemId);
+        if (updatedItem && updatedItem.quantity > 1) {
+            const newQuantity = updatedItem.quantity - 1;
+
+            // Update quantity in state
+            setCartItems((prevItems) => 
+                prevItems.map(item => 
+                    item.productId._id === itemId ? { ...item, quantity: newQuantity } : item
+                )
+            );
+
+            // Send request to update quantity on server
+            try {
+                await axios.put(`https://mma301.onrender.com/cart/${user.id}/${itemId}/update`, {
+                    quantity: newQuantity,
+                });
+            } catch (error) {
+                console.error('Error updating quantity:', error);
+                Alert.alert('Error', 'Failed to update quantity. Please try again.');
+            }
+        }
     };
 
     const renderCartItem = ({ item }) => (
@@ -175,24 +201,18 @@ const CartScreen = ({ navigation }) => {
                             color="#fff" 
                         />
                         <Text style={styles.selectAllButtonText}>
-                            {selectedItems.size === cartItems.length ? 'Bỏ chọn tất cả' : 'Chọn tất cả'}
+                            {selectedItems.size === cartItems.length ? "Bỏ chọn tất cả" : "Chọn tất cả"}
                         </Text>
                     </TouchableOpacity>
-                    <FlatList
+                    <FlatList 
                         data={cartItems}
                         renderItem={renderCartItem}
                         keyExtractor={(item) => item.productId._id}
                         contentContainerStyle={styles.listContainer}
                     />
-                    <View style={styles.summaryContainer}>
-                        <Text style={styles.summaryText}>
-                            Tổng cộng ({selectedItems.size} sản phẩm): 
-                            ${calculateTotalPrice(cartItems.filter(item => selectedItems.has(item.productId._id))).toFixed(2)}
-                        </Text>
-                        <TouchableOpacity style={styles.checkoutButton} onPress={handleCheckout}>
-                            <Text style={styles.checkoutButtonText}>Mua hàng</Text>
-                        </TouchableOpacity>
-                    </View>
+                    <TouchableOpacity style={styles.checkoutButton} onPress={handleCheckout}>
+                        <Text style={styles.checkoutButtonText}>Mua hàng</Text>
+                    </TouchableOpacity>
                 </>
             )}
         </View>
@@ -202,108 +222,95 @@ const CartScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 16,
-        backgroundColor: '#f8f8f8',
+        padding: 20,
+        backgroundColor: '#f8f9fa', // Slightly light background for better contrast
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 20,
+        color: '#333',
     },
     centeredContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
     },
-    title: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        marginBottom: 16,
-        color: '#333',
-    },
-    loadingText: {
-        marginTop: 16,
+    emptyText: {
         fontSize: 18,
         color: '#666',
-    },
-    emptyText: {
-        fontSize: 20,
-        color: '#666',
-        marginTop: 16,
+        marginVertical: 20,
     },
     shopNowButton: {
-        marginTop: 24,
         backgroundColor: '#007bff',
-        paddingHorizontal: 24,
-        paddingVertical: 12,
-        borderRadius: 8,
+        padding: 10,
+        borderRadius: 5,
     },
     shopNowButtonText: {
         color: '#fff',
-        fontSize: 18,
-        fontWeight: 'bold',
-    },
-    listContainer: {
-        paddingBottom: 16,
+        fontSize: 16,
     },
     selectAllButton: {
         flexDirection: 'row',
         alignItems: 'center',
+        padding: 10,
         backgroundColor: '#007bff',
-        padding: 12,
-        borderRadius: 8,
-        marginBottom: 16,
+        borderRadius: 5,
+        marginBottom: 20,
     },
     selectAllButtonText: {
         color: '#fff',
-        fontSize: 16,
-        fontWeight: 'bold',
         marginLeft: 8,
+        fontSize: 16,
     },
     cartItemContainer: {
         flexDirection: 'row',
         alignItems: 'center',
+        padding: 10,
         backgroundColor: '#fff',
-        borderRadius: 8,
-        marginBottom: 12,
-        padding: 12,
+        borderRadius: 5,
+        marginBottom: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.2,
+        shadowRadius: 1,
         elevation: 2,
     },
     selectButton: {
-        marginRight: 12,
+        marginRight: 10,
     },
     quantityContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginLeft: 'auto',
     },
     quantityButton: {
         backgroundColor: '#007bff',
-        borderRadius: 4,
-        padding: 4,
+        padding: 5,
+        borderRadius: 5,
+        marginHorizontal: 5,
     },
     quantityText: {
         fontSize: 18,
-        fontWeight: 'bold',
-        marginHorizontal: 12,
-    },
-    summaryContainer: {
-        backgroundColor: '#fff',
-        borderTopWidth: 1,
-        borderTopColor: '#e1e1e1',
-        paddingVertical: 16,
-        paddingHorizontal: 24,
-    },
-    summaryText: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 16,
+        color: '#333',
     },
     checkoutButton: {
         backgroundColor: '#28a745',
-        paddingVertical: 16,
-        borderRadius: 8,
+        padding: 15,
+        borderRadius: 5,
         alignItems: 'center',
+        marginTop: 20,
     },
     checkoutButtonText: {
         color: '#fff',
         fontSize: 18,
         fontWeight: 'bold',
+    },
+    loadingText: {
+        marginTop: 10,
+        color: '#666',
+    },
+    listContainer: {
+        paddingBottom: 20,
     },
 });
 
