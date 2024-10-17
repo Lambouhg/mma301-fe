@@ -23,7 +23,11 @@ const ListOrderScreen = () => {
       setLoading(true);
       // Sử dụng user.id để lấy danh sách đơn hàng từ API
       const response = await axios.get(`https://mma301.onrender.com/orders/user/${user.id}`);
-      setOrders(response.data);
+      
+      // Sắp xếp đơn hàng theo ngày giảm dần để đơn hàng mới nhất ở trên cùng
+      const sortedOrders = response.data.sort((a, b) => new Date(b.date) - new Date(a.date));
+      
+      setOrders(sortedOrders);
       setError(null);
     } catch (err) {
       console.error("Lỗi khi lấy danh sách đơn hàng:", err);
@@ -176,4 +180,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ListOrderScreen; 
+export default ListOrderScreen;
