@@ -9,6 +9,10 @@ import ChatIcon from '../components/ChatIcon';
 const HomeScreen = ({ navigation }) => {
     const [products, setProducts] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
+    const [selectedBrand, setSelectedBrand] = useState('');
+    const [selectedSize, setSelectedSize] = useState('');
+    const [selectedColor, setSelectedColor] = useState('');
+    const [selectedGender, setSelectedGender] = useState('');
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -23,24 +27,31 @@ const HomeScreen = ({ navigation }) => {
         fetchProducts();
     }, []);
 
-    const filteredProducts = products.filter(product =>
-        product.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const brands = ["Nike", "Adidas", "Puma", "Reebok", "Under Armour"];
+    const sizes = [38, 39, 40, 41, 42, 43]; // Example sizes
+    const colors = ["Red", "Blue", "Green", "Black", "White"]; // Example colors
+    const genders = ["male", "female", "unisex"];
 
-    const renderProductCard = ({ item }) => {
-        return (
-            <ProductCard 
-                product={item} 
-                onPress={() => navigation.navigate('ProductDetail', { product: item })}
-            />
-        );
-    };
+    const filteredProducts = products.filter(product => {
+        const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesBrand = selectedBrand ? product.brand === selectedBrand : true;
+        const matchesSize = selectedSize ? product.sizes.includes(selectedSize) : true;
+        const matchesColor = selectedColor ? product.colors.includes(selectedColor) : true;
+        const matchesGender = selectedGender ? product.gender === selectedGender : true;
+
+        return matchesSearch && matchesBrand && matchesSize && matchesColor && matchesGender;
+    });
+
+    const renderProductCard = ({ item }) => (
+        <ProductCard 
+            product={item} 
+            onPress={() => navigation.navigate('ProductDetail', { product: item })}
+        />
+    );
 
     const handleChatPress = () => {
         navigation.navigate('ChatSupport');
     };
-
-    const brands = ["Nike", "Adidas", "Puma", "Reebok", "Under Armour"];
 
     return (
         <View style={styles.container}>
@@ -59,15 +70,49 @@ const HomeScreen = ({ navigation }) => {
                 />
             </View>
 
-            {/* Brands Section with Horizontal Scroll */}
-            <ScrollView 
-                horizontal 
-                showsHorizontalScrollIndicator={false} 
-                contentContainerStyle={styles.brandsContainer}
-            >
-                {brands.map((brand) => (
-                    <Chip key={brand} style={styles.brandChip}>
+            {/* Filter Chips */}
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filtersContainer}>
+                {/* Brands Filter */}
+                {brands.map(brand => (
+                    <Chip
+                        key={brand}
+                        style={selectedBrand === brand ? styles.selectedChip : styles.brandChip}
+                        onPress={() => setSelectedBrand(selectedBrand === brand ? '' : brand)}
+                    >
                         {brand}
+                    </Chip>
+                ))}
+
+                {/* Sizes Filter */}
+                {sizes.map(size => (
+                    <Chip
+                        key={size}
+                        style={selectedSize === size ? styles.selectedChip : styles.sizeChip}
+                        onPress={() => setSelectedSize(selectedSize === size ? '' : size)}
+                    >
+                        {size}
+                    </Chip>
+                ))}
+
+                {/* Colors Filter */}
+                {colors.map(color => (
+                    <Chip
+                        key={color}
+                        style={selectedColor === color ? styles.selectedChip : styles.colorChip}
+                        onPress={() => setSelectedColor(selectedColor === color ? '' : color)}
+                    >
+                        {color}
+                    </Chip>
+                ))}
+
+                {/* Gender Filter */}
+                {genders.map(gender => (
+                    <Chip
+                        key={gender}
+                        style={selectedGender === gender ? styles.selectedChip : styles.genderChip}
+                        onPress={() => setSelectedGender(selectedGender === gender ? '' : gender)}
+                    >
+                        {gender}
                     </Chip>
                 ))}
             </ScrollView>
@@ -124,21 +169,41 @@ const styles = StyleSheet.create({
     },
     searchInput: {
         flex: 1,
-        fontSize: 16,
-        height: 40,
-    },
-    searchInput: {
-        flex: 1,
         marginLeft: 10,
         fontSize: 16,
     },
-    brandsContainer: {
+    filtersContainer: {
         marginBottom: 20,
         paddingHorizontal: 10,
         height: 60,
         alignItems: 'center', 
     },
     brandChip: {
+        marginRight: 10,
+        backgroundColor: '#d9f7ff',
+        paddingVertical: 8,
+        borderRadius: 15,
+        elevation: 2,
+    },
+    selectedChip: {
+        backgroundColor: '#007bff',
+        color: '#fff',
+    },
+    sizeChip: {
+        marginRight: 10,
+        backgroundColor: '#d9f7ff',
+        paddingVertical: 8,
+        borderRadius: 15,
+        elevation: 2,
+    },
+    colorChip: {
+        marginRight: 10,
+        backgroundColor: '#d9f7ff',
+        paddingVertical: 8,
+        borderRadius: 15,
+        elevation: 2,
+    },
+    genderChip: {
         marginRight: 10,
         backgroundColor: '#d9f7ff',
         paddingVertical: 8,
@@ -152,17 +217,6 @@ const styles = StyleSheet.create({
     listContainer: {
         paddingBottom: 20,
     },
-    productCard: {
-        width: '48%',
-        aspectRatio: 1,
-        marginBottom: 10,
-    },
-    chatIcon: {
-        position: 'absolute',
-        bottom: 20,
-        right: 20,
-        zIndex: 10,
-    },
     emptyContainer: {
         flex: 1,
         justifyContent: 'center',
@@ -171,17 +225,6 @@ const styles = StyleSheet.create({
     emptyText: {
         fontSize: 18,
         color: '#999',
-    },
-    footer: {
-        padding: 15,
-        backgroundColor: '#f8f8f8',
-        borderTopWidth: 1,
-        borderTopColor: '#ddd',
-        alignItems: 'center',
-    },
-    footerText: {
-        fontSize: 16,
-        color: '#007bff',
     },
 });
 

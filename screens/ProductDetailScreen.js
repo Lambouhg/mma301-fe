@@ -1,95 +1,158 @@
 import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, TextInput, Alert, ScrollView } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
+import { AntDesign } from '@expo/vector-icons';
 
-const ProductDetailScreen = ({ route }) => {
-    const { product } = route.params; // Nhận thông tin sản phẩm từ params
-    const { user } = useAuth(); // Nhận thông tin người dùng đã đăng nhập
-    const [quantity, setQuantity] = useState(1); // Trạng thái cho số lượng sản phẩm
 
+const ProductDetailScreen = ({ route, navigation }) => {
+    const { product } = route.params;
+    const { user } = useAuth();
+    const [quantity, setQuantity] = useState(1);
+   
     const addToCart = async () => {
         if (!user) {
-            Alert.alert("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.");
+            Alert.alert("Thông báo", "Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.");
             return;
         }
-
-        const dataToSend = {
-            productId: product._id,
-            quantity,
-        };
-
-        console.log("Adding to cart:", dataToSend); // Kiểm tra dữ liệu gửi đi
-
+    
         try {
-            const response = await axios.post(`https://mma301.onrender.com/cart/${user.id}`, dataToSend);
-            console.log("Response from API:", response.data); // Kiểm tra phản hồi từ API
-            Alert.alert("Sản phẩm đã được thêm vào giỏ hàng!", response.data.message);
+            const response = await axios.post(`https://mma301.onrender.com/cart/${user.id}`, {
+                productId: product._id,
+                quantity,
+            });
+            Alert.alert("Thành công", "Sản phẩm đã được thêm vào giỏ hàng!");
+            // Optional: Clear quantity after adding to cart
+            setQuantity(1);
         } catch (error) {
-            console.error("Error adding to cart:", error); // In ra lỗi
-            Alert.alert("Lỗi khi thêm vào giỏ hàng:", error.response?.data?.message || "Đã xảy ra lỗi.");
+            console.error(error); // Log error for debugging
+            Alert.alert("Lỗi", "Không thể thêm sản phẩm vào giỏ hàng. Vui lòng thử lại sau.");
         }
     };
 
+    
+
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <Image source={{ uri: product.imageUrl }} style={styles.image} />
-            <Text style={styles.title}>{product.name}</Text>
-            <Text style={styles.price}>${product.price.toFixed(2)}</Text>
-            <Text style={styles.description}>{product.description}</Text>
+            <View style={styles.infoContainer}>
+                <Text style={styles.title}>{product.name}</Text>
+                <Text style={styles.price}>{product.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</Text>
+                
+                <View style={styles.detailsContainer}>
+                    <DetailItem icon="trademark" text={`Thương hiệu: ${product.brand}`} />
+                    <DetailItem icon="skin" text={`Chất liệu: ${product.material}`} />
+                    <DetailItem icon="user" text={`Giới tính: ${product.gender}`} />
+                    <DetailItem icon="profile" text={`Kích cỡ: ${product.sizes.join(', ')}`} />
+                    <DetailItem icon="database" text={`Color: ${product.colors}`} />
+                    <DetailItem icon="database" text={`Còn lại: ${product.stock} sản phẩm`} />
+                </View>
 
-            {/* Hiển thị số lượng tồn kho */}
-            <Text style={styles.stock}>Còn lại: {product.stock} sản phẩm</Text>
+                <Text style={styles.descriptionTitle}>Mô tả sản phẩm</Text>
+                <Text style={styles.description}>{product.description}</Text>
 
-            {/* Nhập số lượng */}
-            <View style={styles.quantityContainer}>
-                <Text>Số lượng:</Text>
-                <TextInput
-                    style={styles.quantityInput}
-                    value={String(quantity)}
-                    keyboardType="numeric"
-                    onChangeText={text => setQuantity(Number(text) || 1)} // Đảm bảo số lượng luôn là số
-                />
+                <View style={styles.quantityContainer}>
+                    <Text style={styles.quantityLabel}>Số lượng:</Text>
+                    <TouchableOpacity onPress={() => setQuantity(Math.max(1, quantity - 1))} style={styles.quantityButton}>
+                        <AntDesign name="minus" size={20} color="#007BFF" />
+                    </TouchableOpacity>
+                    <TextInput
+                        style={styles.quantityInput}
+                        value={String(quantity)}
+                        keyboardType="numeric"
+                        onChangeText={text => setQuantity(Math.max(1, Number(text) || 1))}
+                    />
+                    <TouchableOpacity onPress={() => setQuantity(quantity + 1)} style={styles.quantityButton}>
+                        <AntDesign name="plus" size={20} color="#007BFF" />
+                    </TouchableOpacity>
+                </View>
+
+                <TouchableOpacity style={styles.addToCartButton} onPress={addToCart}>
+                    <Text style={styles.buttonText}>Thêm vào giỏ hàng</Text>
+                </TouchableOpacity>
+
+                
             </View>
-
-            <TouchableOpacity style={styles.addToCartButton} onPress={addToCart}>
-                <Text style={styles.buttonText}>Thêm vào giỏ hàng</Text>
-            </TouchableOpacity>
-        </View>
+        </ScrollView>
     );
 };
+
+const DetailItem = ({ icon, text }) => (
+    <View style={styles.detailItem}>
+        <AntDesign name={icon} size={20} color="#666" style={styles.detailIcon} />
+        <Text style={styles.detailText}>{text}</Text>
+    </View>
+);
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 20,
-        backgroundColor: '#f8f8f8',
+        backgroundColor: '#fff',
     },
     image: {
         width: '100%',
         height: 300,
-        borderRadius: 10,
-        marginBottom: 15,
+        resizeMode: 'cover',
+    },
+    infoContainer: {
+        padding: 20,
     },
     title: {
         fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 10,
+        color: '#333',
     },
     price: {
+        fontSize: 22,
+        fontWeight: 'bold',
+        color: '#e74c3c',
+        marginBottom: 15,
+    },
+    detailsContainer: {
+        backgroundColor: '#f8f8f8',
+        borderRadius: 10,
+        padding: 15,
+        marginBottom: 20,
+    },
+    detailItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 8,
+    },
+    detailIcon: {
+        marginRight: 10,
+    },
+    detailText: {
         fontSize: 20,
-        color: '#28a745',
+        color: '#333',
+    },
+    descriptionTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
         marginBottom: 10,
+        color: '#333',
     },
     description: {
         fontSize: 16,
-        color: '#333',
-        marginBottom: 20,
+        color: '#666',
+        lineHeight: 24,
+        marginBottom: 20, 
     },
     quantityContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 20,
+    },
+    quantityLabel: {
+        fontSize: 16,
+        marginRight: 10,
+    },
+    quantityButton: {
+        borderWidth: 1,
+        borderColor: '#007BFF',
+        borderRadius: 5,
+        padding: 5,
     },
     quantityInput: {
         borderWidth: 1,
@@ -98,10 +161,17 @@ const styles = StyleSheet.create({
         padding: 10,
         width: 50,
         textAlign: 'center',
-        marginLeft: 10,
+        marginHorizontal: 10,
     },
     addToCartButton: {
-        backgroundColor: '#007BFF',
+        backgroundColor: '#3498db',
+        padding: 15,
+        borderRadius: 5,
+        alignItems: 'center',
+        marginBottom: 10,
+    },
+    checkoutButton: {
+        backgroundColor: '#2ecc71',
         padding: 15,
         borderRadius: 5,
         alignItems: 'center',
@@ -109,13 +179,8 @@ const styles = StyleSheet.create({
     buttonText: {
         color: '#fff',
         fontSize: 18,
+        fontWeight: 'bold',
     },
-    stock: {
-        fontSize: 16,
-        color: '#888',
-        marginBottom: 20,
-    },
-    
 });
 
 export default ProductDetailScreen;
