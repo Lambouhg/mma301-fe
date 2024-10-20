@@ -25,7 +25,31 @@ const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => {
     return (
-        <Tab.Navigator>
+        <Tab.Navigator  screenOptions={{
+            
+            tabBarStyle: {
+          position: 'absolute',    // Giúp thanh tab nổi lên trên
+          bottom: 0,               // Gắn ở dưới cùng của màn hình
+          left: 0,
+          right: 0,
+          height: 60,              // Chiều cao của thanh tab
+          backgroundColor: 'white', // Nền màu trắng hoặc tùy bạn
+          borderTopLeftRadius: 20,  // Bo góc trên trái
+          borderTopRightRadius: 20, // Bo góc trên phải
+          shadowColor: '#000',      // Tạo đổ bóng để đẹp hơn
+          shadowOffset: { width: 0, height: 5 },
+          shadowOpacity: 0.3,
+          shadowRadius: 3.84,
+          elevation: 5,
+          padding:15,
+          margintop :10
+        },
+            tabBarIconStyle: {
+                paddingBottom: 5, // Khoảng cách giữa icon và cạnh dưới
+            },
+            tabBarActiveTintColor: '#007AFF',  // Màu của icon khi tab được chọn
+            tabBarInactiveTintColor: '#8e8e93', // Màu của icon khi tab không được chọn
+        }}>
             <Tab.Screen
                 name="Home"
                 component={HomeScreen}
@@ -33,17 +57,10 @@ const TabNavigator = () => {
                     tabBarIcon: ({ color, size }) => (
                         <Icon name="home-outline" color={color} size={size} />
                     ),
+                    headerShown: false,
                 }}
             />
-            <Tab.Screen
-                name="Profile"
-                component={ProfileScreen}
-                options={{
-                    tabBarIcon: ({ color, size }) => (
-                        <Icon name="person-outline" color={color} size={size} />
-                    ),
-                }}
-            />
+
             <Tab.Screen
                 name="Cart"
                 component={CartScreen}
@@ -51,6 +68,7 @@ const TabNavigator = () => {
                     tabBarIcon: ({ color, size }) => (
                         <Icon name="cart-outline" color={color} size={size} />
                     ),
+                    headerShown: false,
                 }}
             />
             <Tab.Screen
@@ -61,7 +79,16 @@ const TabNavigator = () => {
                         <Icon name="cart-outline" color={color} size={size} />
                     ),
                 }}
-            />            
+            />       
+            <Tab.Screen
+                name="Profile"
+                component={ProfileScreen}
+                options={{
+                    tabBarIcon: ({ color, size }) => (
+                        <Icon name="person-outline" color={color} size={size} />
+                    ),
+                }}
+            />     
         </Tab.Navigator>
     );
 };

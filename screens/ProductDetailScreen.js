@@ -37,7 +37,7 @@ const ProductDetailScreen = ({ route, navigation }) => {
             <Image source={{ uri: product.imageUrl }} style={styles.image} />
             <View style={styles.infoContainer}>
                 <Text style={styles.title}>{product.name}</Text>
-                <Text style={styles.price}>{product.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</Text>
+                <Text style={styles.price}>{product.price.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</Text>
                 
                 <View style={styles.detailsContainer}>
                     <DetailItem icon="trademark" text={`Thương hiệu: ${product.brand}`} />

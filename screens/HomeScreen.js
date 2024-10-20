@@ -10,9 +10,7 @@ const HomeScreen = ({ navigation }) => {
     const [products, setProducts] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedBrand, setSelectedBrand] = useState('');
-    const [selectedSize, setSelectedSize] = useState('');
-    const [selectedColor, setSelectedColor] = useState('');
-    const [selectedGender, setSelectedGender] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState('');
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -28,18 +26,14 @@ const HomeScreen = ({ navigation }) => {
     }, []);
 
     const brands = ["Nike", "Adidas", "Puma", "Reebok", "Under Armour"];
-    const sizes = [38, 39, 40, 41, 42, 43]; // Example sizes
-    const colors = ["Red", "Blue", "Green", "Black", "White"]; // Example colors
-    const genders = ["male", "female", "unisex"];
+    const categories = ["Sneakers", "Running Shoes", "Formal Shoes", "Boots", "Slippers"]; // Example categories
 
     const filteredProducts = products.filter(product => {
         const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
         const matchesBrand = selectedBrand ? product.brand === selectedBrand : true;
-        const matchesSize = selectedSize ? product.sizes.includes(selectedSize) : true;
-        const matchesColor = selectedColor ? product.colors.includes(selectedColor) : true;
-        const matchesGender = selectedGender ? product.gender === selectedGender : true;
+        const matchesCategory = selectedCategory ? product.category === selectedCategory : true;
 
-        return matchesSearch && matchesBrand && matchesSize && matchesColor && matchesGender;
+        return matchesSearch && matchesBrand && matchesCategory;
     });
 
     const renderProductCard = ({ item }) => (
@@ -83,36 +77,14 @@ const HomeScreen = ({ navigation }) => {
                     </Chip>
                 ))}
 
-                {/* Sizes Filter */}
-                {sizes.map(size => (
+                {/* Categories Filter */}
+                {categories.map(category => (
                     <Chip
-                        key={size}
-                        style={selectedSize === size ? styles.selectedChip : styles.sizeChip}
-                        onPress={() => setSelectedSize(selectedSize === size ? '' : size)}
+                        key={category}
+                        style={selectedCategory === category ? styles.selectedChip : styles.categoryChip}
+                        onPress={() => setSelectedCategory(selectedCategory === category ? '' : category)}
                     >
-                        {size}
-                    </Chip>
-                ))}
-
-                {/* Colors Filter */}
-                {colors.map(color => (
-                    <Chip
-                        key={color}
-                        style={selectedColor === color ? styles.selectedChip : styles.colorChip}
-                        onPress={() => setSelectedColor(selectedColor === color ? '' : color)}
-                    >
-                        {color}
-                    </Chip>
-                ))}
-
-                {/* Gender Filter */}
-                {genders.map(gender => (
-                    <Chip
-                        key={gender}
-                        style={selectedGender === gender ? styles.selectedChip : styles.genderChip}
-                        onPress={() => setSelectedGender(selectedGender === gender ? '' : gender)}
-                    >
-                        {gender}
+                        {category}
                     </Chip>
                 ))}
             </ScrollView>
@@ -141,7 +113,9 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#ffffff',
-        padding: 20,
+        padding: 10,
+        paddingBottom: 30,
+        paddingTop: 60, // To accommodate the chat icon
     },
     header: {
         marginBottom: 20,
@@ -164,8 +138,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         paddingHorizontal: 15,
         paddingVertical: 10,
-        marginBottom: 20,
-        marginHorizontal: 10,
+        marginBottom: 5,
     },
     searchInput: {
         flex: 1,
@@ -173,11 +146,12 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     filtersContainer: {
-        marginBottom: 20,
+        marginBottom: 10,
         paddingHorizontal: 10,
         height: 60,
-        alignItems: 'center', 
+        alignItems: 'center',
     },
+    // Style chung cho các filter chưa được chọn
     brandChip: {
         marginRight: 10,
         backgroundColor: '#d9f7ff',
@@ -185,37 +159,31 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         elevation: 2,
     },
+    categoryChip: {
+        marginRight: 10,
+        backgroundColor: '#d9f7ff',
+        paddingVertical: 8,
+        borderRadius: 15,
+        elevation: 2,
+        
+
+    },
+    // Style cho chip khi đã chọn - chỉ thay đổi màu sắc
     selectedChip: {
-        backgroundColor: '#007bff',
-        color: '#fff',
-    },
-    sizeChip: {
-        marginRight: 10,
-        backgroundColor: '#d9f7ff',
+        backgroundColor: '#007bff',  // Màu xanh khi chọn
+        color: '#fff',  // Màu chữ trắng khi chọn 
         paddingVertical: 8,
-        borderRadius: 15,
         elevation: 2,
-    },
-    colorChip: {
         marginRight: 10,
-        backgroundColor: '#d9f7ff',
-        paddingVertical: 8,
-        borderRadius: 15,
-        elevation: 2,
-    },
-    genderChip: {
-        marginRight: 10,
-        backgroundColor: '#d9f7ff',
-        paddingVertical: 8,
-        borderRadius: 15,
-        elevation: 2,
     },
     row: {
         justifyContent: 'space-between',
         marginBottom: 20,
     },
     listContainer: {
-        paddingBottom: 20,
+        marginTop: 10,
+        borderRadius: 10,
+        paddingBottom:20
     },
     emptyContainer: {
         flex: 1,
@@ -227,5 +195,6 @@ const styles = StyleSheet.create({
         color: '#999',
     },
 });
+
 
 export default HomeScreen;
