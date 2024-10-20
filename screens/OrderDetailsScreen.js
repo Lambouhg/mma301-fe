@@ -12,7 +12,7 @@ const OrderDetailsScreen = ({ route }) => {
         <Card.Content>
           <Text style={styles.detailText}>Mã đơn hàng: {order._id}</Text>
           <Text style={styles.detailText}>Ngày đặt hàng: {new Date(order.date).toLocaleDateString()}</Text>
-          <Text style={styles.detailText}>Tổng tiền: {order.totalPrice.toLocaleString()} VND</Text>
+          <Text style={styles.detailText}>Tổng tiền: {order.totalPrice.toLocaleString()} USD</Text>
         </Card.Content>
       </Card>
 

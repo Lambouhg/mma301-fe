@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity, Image } from 'react-native';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity, Image, Alert } from 'react-native';
 import axios from 'axios';
+import { useFocusEffect } from '@react-navigation/native';
 
 const OrderScreen = ({ route, navigation }) => {
     const { orderId } = route.params;
     const [orderDetails, setOrderDetails] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [isProcessingPayment, setIsProcessingPayment] = useState(false); // New state for payment processing
+    const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
     const fetchProductDetails = async (productIds) => {
         const productDetailsPromises = productIds.map(productId =>
@@ -19,14 +20,23 @@ const OrderScreen = ({ route, navigation }) => {
     const fetchOrderDetails = async () => {
         try {
             const response = await axios.get(`https://mma301.onrender.com/orders/${orderId}`);
-            console.log(response.data);
-
+            console.log("Dữ liệu đơn hàng:", response.data); // Kiểm tra dữ liệu đơn hàng
+    
+            // Nếu không có sản phẩm, không cần tiếp tục
+            if (!response.data.products || response.data.products.length === 0) {
+                Alert.alert("Thông báo", "Không có sản phẩm trong đơn hàng.");
+                setLoading(false);
+                return;
+            }
+    
             const productsWithDetails = await fetchProductDetails(response.data.products.map(item => item.productId));
+            console.log("Dữ liệu sản phẩm chi tiết:", productsWithDetails); // Kiểm tra dữ liệu sản phẩm
+    
             const productsWithFullDetails = response.data.products.map((item, index) => ({
                 ...item,
-                productId: productsWithDetails[index],
+                productId: productsWithDetails[index], // Kiểm tra item.productId có chứa giá không
             }));
-
+    
             setOrderDetails({ ...response.data, products: productsWithFullDetails });
         } catch (error) {
             console.error("Lỗi khi lấy chi tiết đơn hàng:", error);
@@ -34,10 +44,57 @@ const OrderScreen = ({ route, navigation }) => {
             setLoading(false);
         }
     };
-
+    
     useEffect(() => {
         fetchOrderDetails();
     }, [orderId]);
+
+    // Function to handle order deletion
+    const deleteOrder = async () => {
+        try {
+            await axios.delete(`https://mma301.onrender.com/orders/${orderId}`);
+            navigation.navigate('Cart'); // Điều hướng về trang CartScreen sau khi hủy đơn hàng
+            Alert.alert("Thông báo", "Đơn hàng đã bị hủy.");
+        } catch (error) {
+            console.error("Lỗi khi hủy đơn hàng:", error);
+        }
+    };
+
+    // Handle back action
+    useFocusEffect(
+        React.useCallback(() => {
+            const handleBackAction = (e) => {
+                // Ngăn chặn hành động quay lại mặc định
+                e.preventDefault();
+
+                Alert.alert(
+                    "Cảnh báo",
+                    "Nếu không thanh toán, đơn hàng sẽ bị hủy. Bạn có chắc chắn muốn thoát không?",
+                    [
+                        {
+                            text: "Không",
+                            onPress: () => {},
+                            style: "cancel"
+                        },
+                        {
+                            text: "Có",
+                            onPress: () => {
+                                deleteOrder();
+                                navigation.dispatch(e.data.action); // Thực hiện điều hướng sau khi hủy
+                            },
+                        }
+                    ],
+                    { cancelable: false }
+                );
+            };
+
+            navigation.addListener('beforeRemove', handleBackAction);
+
+            return () => {
+                navigation.removeListener('beforeRemove', handleBackAction);
+            };
+        }, [navigation])
+    );
 
     const renderProductDetail = ({ item }) => {
         const productPrice = item.productId.price;
@@ -48,22 +105,21 @@ const OrderScreen = ({ route, navigation }) => {
                 <View style={styles.productInfo}>
                     <Text style={styles.productTitle}>{item.productId.name}</Text>
                     <Text style={styles.productQuantity}>Số lượng: {item.quantity}</Text>
-                    <Text style={styles.productPrice}>Giá: {totalProductPrice.toFixed(2)} đ</Text>
+                    <Text style={styles.productPrice}>Giá: {totalProductPrice.toFixed(2)} $</Text>
                 </View>
             </View>
         );
     };
 
     const handlePayment = async () => {
-        if (isProcessingPayment) return; // Prevent further clicks if processing
-        setIsProcessingPayment(true); // Set the processing state
+        if (isProcessingPayment) return;
+        setIsProcessingPayment(true);
         try {
-            // Here you can add the payment processing logic if required
             navigation.navigate('Payment', { orderDetails });
         } catch (error) {
             console.error("Lỗi khi thanh toán:", error);
         } finally {
-            setIsProcessingPayment(false); // Reset processing state
+            setIsProcessingPayment(false);
         }
     };
 
@@ -92,11 +148,11 @@ const OrderScreen = ({ route, navigation }) => {
                 renderItem={renderProductDetail}
                 keyExtractor={(item) => item.productId._id}
             />
-            <Text style={styles.totalPrice}>Tổng tiền: {orderDetails.totalPrice.toFixed(2)} đ</Text>
+            <Text style={styles.totalPrice}>Tổng tiền: {orderDetails.totalPrice.toFixed(2)} $</Text>
             <TouchableOpacity 
                 style={styles.paymentButton} 
                 onPress={handlePayment} 
-                disabled={isProcessingPayment} // Disable the button if processing
+                disabled={isProcessingPayment}
             >
                 <Text style={styles.paymentButtonText}>
                     {isProcessingPayment ? 'Đang xử lý...' : 'Thanh toán'}
