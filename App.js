@@ -4,7 +4,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
-import OrderDetailsScreen from './screens/OrderDetailsScreen';
 import HomeScreen from './screens/HomeScreen';
 import LoginScreen from './screens/LoginScreen';
 import SignupScreen from './screens/SignupScreen';
@@ -14,11 +13,12 @@ import CartScreen from './screens/CartScreen';
 import OrderScreen from './screens/OrderScreen';
 import PaymentScreen from './screens/PaymentScreen';
 import ListOrderScreen from './screens/ListOrderScreen';
-import ChatSupport from './screens/ChatSupport'; // Import ChatSupport screen
+import ChatSupport from './screens/ChatSupport';
 import Icon from 'react-native-vector-icons/Ionicons';
 import EditProfileScreen from './screens/EditProfileScreen';
 import EditPasswordScreen from './screens/EditPassword';
-import EditAddressScreen from './screens/EditAddressScreen'; // Import EditAddressScreen
+import EditAddressScreen from './screens/EditAddressScreen';
+import ListOrderDetailScreen from './screens/ListOrderDetailScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -28,27 +28,27 @@ const TabNavigator = () => {
         <Tab.Navigator  screenOptions={{
             
             tabBarStyle: {
-          position: 'absolute',    // Giúp thanh tab nổi lên trên
-          bottom: 0,               // Gắn ở dưới cùng của màn hình
+          position: 'absolute',
+          bottom: 0,
           left: 0,
           right: 0,
-          height: 60,              // Chiều cao của thanh tab
-          backgroundColor: 'white', // Nền màu trắng hoặc tùy bạn
-          borderTopLeftRadius: 20,  // Bo góc trên trái
-          borderTopRightRadius: 20, // Bo góc trên phải
-          shadowColor: '#000',      // Tạo đổ bóng để đẹp hơn
+          height: 60,
+          backgroundColor: 'white',
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+          shadowColor: '#000',
           shadowOffset: { width: 0, height: 5 },
           shadowOpacity: 0.3,
           shadowRadius: 3.84,
           elevation: 5,
           padding:15,
-          margintop :10
+          margintop:10
         },
             tabBarIconStyle: {
-                paddingBottom: 5, // Khoảng cách giữa icon và cạnh dưới
+                paddingBottom: 5,
             },
-            tabBarActiveTintColor: '#007AFF',  // Màu của icon khi tab được chọn
-            tabBarInactiveTintColor: '#8e8e93', // Màu của icon khi tab không được chọn
+            tabBarActiveTintColor: '#007AFF',
+            tabBarInactiveTintColor: '#8e8e93',
         }}>
             <Tab.Screen
                 name="Home"
@@ -135,7 +135,7 @@ const App = () => {
                             options={{ title: 'Update Profile' }}
                         />
                         <Stack.Screen
-                            name="EditAddress" // Thêm route cho EditAddressScreen
+                            name="EditAddress"
                             component={EditAddressScreen}
                             options={{ title: 'Chỉnh sửa địa chỉ' }}
                         />
@@ -145,8 +145,8 @@ const App = () => {
                             options={{ title: 'Hỗ trợ chat' }}
                         />
                         <Stack.Screen 
-                            name="OrderDetails" 
-                            component={OrderDetailsScreen} 
+                            name="ListOrderDetail"
+                            component={ListOrderDetailScreen} 
                             options={{ title: 'Chi tiết Đơn hàng' }} 
                         />
                         <Stack.Screen 
