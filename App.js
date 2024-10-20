@@ -17,7 +17,6 @@ import ChatSupport from './screens/ChatSupport';
 import Icon from 'react-native-vector-icons/Ionicons';
 import EditProfileScreen from './screens/EditProfileScreen';
 import EditPasswordScreen from './screens/EditPassword';
-import EditAddressScreen from './screens/EditAddressScreen';
 import ListOrderDetailScreen from './screens/ListOrderDetailScreen';
 
 const Stack = createNativeStackNavigator();
@@ -133,11 +132,6 @@ const App = () => {
                             name="EditProfile"
                             component={EditProfileScreen}
                             options={{ title: 'Update Profile' }}
-                        />
-                        <Stack.Screen
-                            name="EditAddress"
-                            component={EditAddressScreen}
-                            options={{ title: 'Chỉnh sửa địa chỉ' }}
                         />
                         <Stack.Screen
                             name="ChatSupport"

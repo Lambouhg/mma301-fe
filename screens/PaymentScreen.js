@@ -162,13 +162,6 @@ const PaymentScreen = ({ route, navigation }) => {
           <Text>Email: {userInfo.email}</Text>
           <Text>Sđt: {userInfo.phoneNumber}</Text>
           <Text>Địa chỉ: {userInfo.address}</Text>
-          {/* Button to edit address */}
-          <TouchableOpacity
-            style={styles.editButton}
-            onPress={() => navigation.navigate("EditAddress", { userInfo })}
-          >
-            <Text style={styles.editButtonText}>Chỉnh sửa địa chỉ</Text>
-          </TouchableOpacity>
         </View>
       )}
 
