@@ -1,5 +1,3 @@
-// /screens/LoginScreen.js
-
 import React, { useState } from 'react';
 import { View, StyleSheet, Alert, Image } from 'react-native';
 import { TextInput, Button, Text, Appbar, Card } from 'react-native-paper';
@@ -37,14 +35,20 @@ const LoginScreen = ({ navigation }) => {
                             onChangeText={setEmail}
                             mode="outlined"
                             style={styles.input}
+                            onSubmitEditing={() => {
+                                // Focus on the password input when the user presses enter
+                                passwordInput.focus();
+                            }}
                         />
                         <TextInput
+                            ref={(input) => { passwordInput = input; }} // Create a reference for the password input
                             label="Password"
                             value={password}
                             onChangeText={setPassword}
                             secureTextEntry
                             mode="outlined"
                             style={styles.input}
+                            onSubmitEditing={handleLogin} // Call handleLogin when user presses enter/done
                         />
                         <Button mode="contained" onPress={handleLogin} style={styles.button}>
                             Login
