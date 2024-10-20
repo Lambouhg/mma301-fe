@@ -48,6 +48,8 @@ const PaymentScreen = ({ route, navigation }) => {
     }
   };
 
+
+  
   const handlePayment = () => {
     if (paymentMethod === "momo") {
       Alert.alert(
@@ -173,9 +175,10 @@ const PaymentScreen = ({ route, navigation }) => {
       <View style={styles.orderSummary}>
         <Text style={styles.summaryTitle}>Tóm tắt đơn hàng</Text>
         <Text>Mã đơn hàng: #{orderDetails._id}</Text>
+        
         <Text>Số lượng sản phẩm: {orderDetails.products.length}</Text>
         <Text style={styles.totalPrice}>
-          Tổng tiền: {orderDetails.totalPrice.toFixed(2)} đ
+          Tổng tiền: {orderDetails.totalPrice.toFixed(2)} $
         </Text>
       </View>
 

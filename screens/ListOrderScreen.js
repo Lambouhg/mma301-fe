@@ -45,7 +45,7 @@ const ListOrderScreen = () => {
       <Card.Content>
         <Text style={styles.orderTitle}>Đơn hàng #{item._id}</Text>
         <Text style={styles.orderDate}>Ngày: {new Date(item.date).toLocaleDateString()}</Text>
-        <Text style={styles.orderTotal}>Tổng tiền: {item.totalPrice.toLocaleString()} VND</Text>
+        <Text style={styles.orderTotal}>Tổng tiền: {item.totalPrice.toLocaleString()} USD</Text>
 
         {/* Kiểm tra nếu có thông tin shippingAddress thì hiển thị */}
         {item.shippingAddress ? (
