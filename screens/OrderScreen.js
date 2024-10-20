@@ -6,6 +6,7 @@ const OrderScreen = ({ route, navigation }) => {
     const { orderId } = route.params;
     const [orderDetails, setOrderDetails] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [isProcessingPayment, setIsProcessingPayment] = useState(false); // New state for payment processing
 
     const fetchProductDetails = async (productIds) => {
         const productDetailsPromises = productIds.map(productId =>
@@ -53,8 +54,17 @@ const OrderScreen = ({ route, navigation }) => {
         );
     };
 
-    const handlePayment = () => {
-        navigation.navigate('Payment', { orderDetails });
+    const handlePayment = async () => {
+        if (isProcessingPayment) return; // Prevent further clicks if processing
+        setIsProcessingPayment(true); // Set the processing state
+        try {
+            // Here you can add the payment processing logic if required
+            navigation.navigate('Payment', { orderDetails });
+        } catch (error) {
+            console.error("Lỗi khi thanh toán:", error);
+        } finally {
+            setIsProcessingPayment(false); // Reset processing state
+        }
     };
 
     if (loading) {
@@ -83,8 +93,14 @@ const OrderScreen = ({ route, navigation }) => {
                 keyExtractor={(item) => item.productId._id}
             />
             <Text style={styles.totalPrice}>Tổng tiền: {orderDetails.totalPrice.toFixed(2)} đ</Text>
-            <TouchableOpacity style={styles.paymentButton} onPress={handlePayment}>
-                <Text style={styles.paymentButtonText}>Thanh toán</Text>
+            <TouchableOpacity 
+                style={styles.paymentButton} 
+                onPress={handlePayment} 
+                disabled={isProcessingPayment} // Disable the button if processing
+            >
+                <Text style={styles.paymentButtonText}>
+                    {isProcessingPayment ? 'Đang xử lý...' : 'Thanh toán'}
+                </Text>
             </TouchableOpacity>
         </View>
     );
