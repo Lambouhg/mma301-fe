@@ -76,7 +76,7 @@ const TabNavigator = () => {
                 component={ListOrderScreen}
                 options={{
                     tabBarIcon: ({ color, size }) => (
-                        <Icon name="cart-outline" color={color} size={size} />
+                        <Icon name="receipt-outline" color={color} size={size} />
                     ),
                 }}
             />       
