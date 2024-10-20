@@ -1,36 +1,32 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import axios from 'axios';
-import { useAuth } from '../context/AuthContext';  // Sử dụng useAuth từ AuthContext
-import { Card, Button } from 'react-native-paper';
+import React, { useEffect, useState } from 'react';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { useAuth } from '../context/AuthContext';
 
-const ListOrderScreen = () => {
-  const { user } = useAuth();  // Lấy thông tin user từ AuthContext
+const ListOrderScreen = ({ navigation }) => {
+  const { user } = useAuth();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigation = useNavigation();
 
   useEffect(() => {
     if (user) {
-      fetchOrders();  // Gọi hàm lấy danh sách đơn hàng nếu người dùng đã đăng nhập
+      fetchOrders();
     }
   }, [user]);
 
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      // Sử dụng user.id để lấy danh sách đơn hàng từ API
-      const response = await axios.get(`https://mma301.onrender.com/orders/user/${user.id}`);
-      
-      // Sắp xếp đơn hàng theo ngày giảm dần để đơn hàng mới nhất ở trên cùng
-      const sortedOrders = response.data.sort((a, b) => new Date(b.date) - new Date(a.date));
-      
+      const response = await fetch(`https://mma301.onrender.com/orders/user/${user.id}`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      const sortedOrders = data.sort((a, b) => new Date(b.date) - new Date(a.date));
       setOrders(sortedOrders);
       setError(null);
     } catch (err) {
-      console.error("Lỗi khi lấy danh sách đơn hàng:", err);
+      console.error(err);
       setError('Có lỗi xảy ra khi tải danh sách đơn hàng.');
     } finally {
       setLoading(false);
@@ -38,52 +34,29 @@ const ListOrderScreen = () => {
   };
 
   const renderOrderItem = ({ item }) => (
-    <Card 
-      style={styles.orderCard} 
-      onPress={() => navigation.navigate('OrderDetails', { order: item, user: user })}  // Truyền thông tin order và user
+    <View style={styles.orderItem}>
+      <Text style={styles.orderId}>Mã đơn hàng: {item.id}</Text>
+      <Text style={styles.orderDate}>Thời gian đặt hàng: {item.date}</Text>
+      <Text style={styles.orderTotal}>Tổng tiền: {item.totalPrice} VND</Text>
+      <Text style={styles.orderStatus}>Trạng thái: <Text style={styles.statusText(item.status)}>{item.status}</Text></Text>
+      <Text style={styles.productHeader}>Sản phẩm:</Text>
+      {item.products.map((product) => (
+        <Text key={product.id} style={styles.productName}>{product.name}</Text>
+      ))}
+    <TouchableOpacity 
+      style={styles.detailButton} 
+      onPress={() => navigation.navigate('ListOrderDetail', { order: item, user: user })}
     >
-      <Card.Content>
-        <Text style={styles.orderTitle}>Đơn hàng #{item._id}</Text>
-        <Text style={styles.orderDate}>Ngày: {new Date(item.date).toLocaleDateString()}</Text>
-        <Text style={styles.orderTotal}>Tổng tiền: {item.totalPrice.toLocaleString()} USD</Text>
-
-        {/* Kiểm tra nếu có thông tin shippingAddress thì hiển thị */}
-        {item.shippingAddress ? (
-          <Text style={styles.orderInfo}>
-            Địa chỉ giao hàng: {item.shippingAddress.address}, {item.shippingAddress.city}, {item.shippingAddress.postalCode}, {item.shippingAddress.country}
-          </Text>
-        ) : (
-          <Text style={styles.orderInfo}>Địa chỉ giao hàng: Chưa cung cấp</Text>
-        )}
-
-        {/* Hiển thị danh sách sản phẩm trong đơn hàng */}
-        <View style={styles.productList}>
-          <Text style={styles.productListTitle}>Sản phẩm:</Text>
-          {Array.isArray(item.orderItems) && item.orderItems.length > 0 ? (
-            item.orderItems.map((product, index) => (
-              <View key={index} style={styles.productItem}>
-                <Text>{product.name} - Số lượng: {product.qty}</Text>
-                <Text>Giá: {product.price.toLocaleString()} VND</Text>
-              </View>
-            ))
-          ) : (
-            <Text>Không có sản phẩm nào trong đơn hàng.</Text> // Handle case when there are no products
-          )}
-        </View>
-      </Card.Content>
-      <Card.Actions>
-        <Button mode="contained" onPress={() => navigation.navigate('OrderDetails', { order: item, user: user })}>
-          Xem Chi Tiết
-        </Button>
-      </Card.Actions>
-    </Card>
+      <Text style={styles.detailButtonText}>Xem chi tiết</Text>
+    </TouchableOpacity>
+    </View>
   );
 
   if (loading) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
-        <Text>Đang tải danh sách đơn hàng...</Text>
+        <ActivityIndicator size="large" color="#007bff" />
+        <Text style={styles.loadingText}>Đang tải danh sách đơn hàng...</Text>
       </View>
     );
   }
@@ -102,19 +75,26 @@ const ListOrderScreen = () => {
   if (orders.length === 0) {
     return (
       <View style={styles.centerContainer}>
-        <Text>Bạn chưa có đơn hàng nào.</Text>
+        <Text style={styles.emptyText}>Bạn chưa có đơn hàng nào.</Text>
+        <TouchableOpacity 
+          style={styles.shopNowButton}
+          onPress={() => navigation.navigate('Home')}
+        >
+          <Text style={styles.shopNowButtonText}>Mua sắm ngay</Text>
+        </TouchableOpacity>
       </View>
     );
   }
-
+  
   return (
     <View style={styles.container}>
       <FlatList
         data={orders}
         renderItem={renderOrderItem}
-        keyExtractor={item => item._id}
+        keyExtractor={(item) => item.id}
         refreshing={loading}
         onRefresh={fetchOrders}
+        contentContainerStyle={styles.flatListContent}
       />
     </View>
   );
@@ -123,61 +103,98 @@ const ListOrderScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
-    backgroundColor: '#f8f8f8',
+    padding: 16,
+    backgroundColor: '#f4f4f4',
+  },
+  flatListContent: {
+    paddingBottom: 20,
+  },
+  orderItem: {
+    marginBottom: 16,
+    padding: 16,
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
+  },
+  orderId: {
+    fontWeight: 'bold',
+    fontSize: 18,
+  },
+  orderDate: {
+    color: '#777',
+  },
+  orderTotal: {
+    fontWeight: 'bold',
+    color: '#007bff',
+    fontSize: 16,
+  },
+  orderStatus: {
+    marginTop: 5,
+  },
+  statusText: (status) => ({
+    color: status === 'Completed' ? 'green' : (status === 'Pending' ? 'orange' : 'red'),
+    fontWeight: 'bold',
+  }),
+  productHeader: {
+    marginTop: 10,
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  productName: {
+    paddingLeft: 10,
+    color: '#333',
   },
   centerContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#f4f4f4',
   },
-  orderCard: {
-    marginBottom: 10,
-    backgroundColor: '#fff',
-    borderRadius: 5,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 1 },
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  orderTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  orderDate: {
-    fontSize: 14,
-    color: '#666',
-    marginTop: 5,
-  },
-  orderTotal: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#28a745',
-    marginTop: 5,
-  },
-  productList: {
+  loadingText: {
     marginTop: 10,
+    color: '#555',
   },
-  productListTitle: {
-    fontWeight: 'bold',
-  },
-  productItem: {
-    marginTop: 5,
+  emptyText: {
+    color: '#555',
   },
   errorText: {
     color: 'red',
-    marginBottom: 10,
   },
   retryButton: {
-    backgroundColor: '#007bff',
+    marginTop: 10,
     padding: 10,
+    backgroundColor: '#ffcc00',
     borderRadius: 5,
   },
   retryButtonText: {
-    color: '#fff',
     fontWeight: 'bold',
   },
+  shopNowButton: {
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: '#007bff',
+    borderRadius: 5,
+  },
+  shopNowButtonText: {
+    color: '#ffffff',
+    fontWeight: 'bold',
+  },
+  detailButton: {
+  marginTop: 10,
+  padding: 10,
+  backgroundColor: '#007bff',
+  borderRadius: 5,
+  },
+  detailButtonText: {
+  color: '#ffffff',
+  fontWeight: 'bold',
+  textAlign: 'center',
+},
+
 });
 
 export default ListOrderScreen;
