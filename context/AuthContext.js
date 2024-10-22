@@ -17,6 +17,15 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const verifyCode = async (email, code) => {
+        try {
+            const response = await axios.post('https://mma301.onrender.com/users/verify', { email, code });
+            return { success: response.data };
+        } catch (error) {
+            throw error.response.data;
+        }
+    };
+
     const login = async (email, password) => {
         try {
             const response = await axios.post('https://mma301.onrender.com/users/login', { email, password });
@@ -33,7 +42,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, signup, login, logout }}>
+        <AuthContext.Provider value={{ user, signup, login, logout, verifyCode }}>
             {children}
         </AuthContext.Provider>
     );

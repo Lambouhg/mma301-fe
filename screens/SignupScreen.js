@@ -1,21 +1,20 @@
-// /screens/SignupScreen.js
-
 import React, { useState } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
 import { TextInput, Button, Text, Appbar } from 'react-native-paper';
 import { useAuth } from '../context/AuthContext';
 
 const SignupScreen = ({ navigation }) => {
-    const { signup } = useAuth();
+    const { signup, verifyCode } = useAuth();
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
     const handleSignup = async () => {
         try {
-            await signup(username, email, password);
-            Alert.alert('Signup Successful!', 'Please log in to continue.');
-            navigation.navigate('Login');
+            console.log('Signup Data:', { username, email, password });
+            const response = await signup(username, email, password);
+            Alert.alert('Signup Successful!', 'Please check your email for the verification code.');
+            navigation.navigate('VerifyAccount', { email });
         } catch (error) {
             Alert.alert('Signup Failed', error.message);
         }
@@ -27,27 +26,27 @@ const SignupScreen = ({ navigation }) => {
                 <Appbar.Content title="Sign Up" />
             </Appbar.Header>
             <View style={styles.innerContainer}>
-                <TextInput 
-                    label="Username" 
-                    value={username} 
-                    onChangeText={setUsername} 
-                    mode="outlined" 
-                    style={styles.input} 
+                <TextInput
+                    label="Username"
+                    value={username}
+                    onChangeText={setUsername}
+                    mode="outlined"
+                    style={styles.input}
                 />
-                <TextInput 
-                    label="Email" 
-                    value={email} 
-                    onChangeText={setEmail} 
-                    mode="outlined" 
-                    style={styles.input} 
+                <TextInput
+                    label="Email"
+                    value={email}
+                    onChangeText={setEmail}
+                    mode="outlined"
+                    style={styles.input}
                 />
-                <TextInput 
-                    label="Password" 
-                    secureTextEntry 
-                    value={password} 
-                    onChangeText={setPassword} 
-                    mode="outlined" 
-                    style={styles.input} 
+                <TextInput
+                    label="Password"
+                    secureTextEntry
+                    value={password}
+                    onChangeText={setPassword}
+                    mode="outlined"
+                    style={styles.input}
                 />
                 <Button mode="contained" onPress={handleSignup} style={styles.button}>
                     Sign Up

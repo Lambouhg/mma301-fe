@@ -10,9 +10,9 @@ const SignupForm = ({ navigation }) => {
 
     const handleSignup = async () => {
         try {
-            await axios.post('https://mma301.onrender.com//users/signup', { username, email, password });
+            await axios.post('https://mma301.onrender.com/users/signup', { username, email, password });
             Alert.alert('Success', 'Account created successfully');
-            navigation.navigate('Login');
+            navigation.navigate('VerifyAccount', { email });
         } catch (error) {
             Alert.alert('Signup Failed', error.response.data.message);
         }
