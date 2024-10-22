@@ -22,11 +22,17 @@ const CartScreen = ({ navigation }) => {
             const response = await axios.get(`https://mma301.onrender.com/cart/${user.id}`);
             setCartItems(response.data.products || []);
         } catch (error) {
-            console.error('Error fetching cart items:', error);
-            Alert.alert('Error', 'Failed to load cart items. Please try again.');
+            if (error.response && error.response.status === 404) {
+                // Nếu giỏ hàng trống, set cartItems là mảng rỗng
+                setCartItems([]);
+            } else {
+                console.error('Error fetching cart items:', error);
+                Alert.alert('Error', 'Failed to load cart items. Please try again.');
+            }
         } finally {
             setLoading(false);
         }
+        
     };
 
     useFocusEffect(
