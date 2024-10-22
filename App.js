@@ -18,6 +18,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import EditProfileScreen from './screens/EditProfileScreen';
 import EditPasswordScreen from './screens/EditPassword';
 import ListOrderDetailScreen from './screens/ListOrderDetailScreen';
+import VerifyAccountScreen from './screens/VerifyAccountScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -122,6 +123,11 @@ const App = () => {
                             name="Order"
                             component={OrderScreen}
                             options={{ title: 'Mua hàng' }}
+                        />
+                        <Stack.Screen  
+                            name='VerifyAccount'
+                            component={VerifyAccountScreen}
+                            options={{ title: 'Xác thực tài khoản' }}
                         />
                         <Stack.Screen
                             name="Payment"
