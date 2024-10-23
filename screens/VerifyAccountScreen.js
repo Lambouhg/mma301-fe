@@ -16,7 +16,7 @@ const VerifyAccountScreen = ({ route, navigation }) => {
           "Xác thực thành công",
           "Tài khoản của bạn đã được xác thực, hãy đăng nhập và mua hàng!"
         );
-        navigation.navigate("Login");
+        navigation.navigate("Đăng nhập");
       } else {
         throw new Error(
           "Mã xác thực không hợp lệ. Vui lòng nhập lại!",
