@@ -31,20 +31,20 @@ const EditProfileScreen = ({ route, navigation }) => {
 
     // Validate Username
     if (!editedData.username || editedData.username.trim().length === 0) {
-      errors.username = "Username không hợp lệ";
+      errors.username = "Tên người dùng không hợp lệ";
     }
 
     // Validate Phone Number
     const phoneRegex = /^(03|05|07|08|09)[0-9]{8}$/;
     if (!editedData.phoneNumber || editedData.phoneNumber.trim().length === 0) {
-      errors.phoneNumber = "Phone Number không được để trống";
+      errors.phoneNumber = "Số điện thoại không được để trống";
     } else if (!phoneRegex.test(editedData.phoneNumber)) {
-      errors.phoneNumber = "Phone Number không hợp lệ";
+      errors.phoneNumber = "Số điện thoại không hợp lệ";
     }
 
     // Validate Address
     if (!editedData.address || editedData.address.trim().length === 0) {
-        errors.address = "Address không được để trống";
+      errors.address = "Địa chỉ không được để trống";
     }
 
     // Nếu có lỗi thì hiển thị alert và return
@@ -63,12 +63,12 @@ const EditProfileScreen = ({ route, navigation }) => {
           headers: { Authorization: `Bearer ${user.token}` },
         }
       );
-      Alert.alert("Success", "Profile updated successfully");
+      Alert.alert("Thành công", "Hồ sơ đã được cập nhật.");
 
       // Điều hướng trở về ProfileScreen và refresh dữ liệu
-      navigation.navigate("Profile", { updated: true });
+      navigation.navigate("Tôi", { updated: true });
     } catch (error) {
-      Alert.alert("Error", "Failed to update profile");
+      Alert.alert("Lỗi", "Cập nhật hồ sơ không thành công.");
     } finally {
       setLoading(false);
     }
@@ -78,7 +78,7 @@ const EditProfileScreen = ({ route, navigation }) => {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator animating={true} size="large" />
-        <Text>Loading...</Text>
+        <Text>Đang tải...</Text>
       </View>
     );
   }
@@ -86,7 +86,7 @@ const EditProfileScreen = ({ route, navigation }) => {
   return (
     <ScrollView style={styles.container}>
       <TextInput
-        label="Username"
+        label="Tên người dùng"
         value={editedData.username}
         onChangeText={(text) =>
           setEditedData({ ...editedData, username: text })
@@ -101,7 +101,7 @@ const EditProfileScreen = ({ route, navigation }) => {
         disabled
       />
       <TextInput
-        label="Phone Number"
+        label="Số điện thoại"
         value={editedData.phoneNumber}
         onChangeText={(text) =>
           setEditedData({ ...editedData, phoneNumber: text })
@@ -109,7 +109,7 @@ const EditProfileScreen = ({ route, navigation }) => {
         style={styles.input}
       />
       <TextInput
-        label="Address"
+        label="Địa chỉ"
         value={editedData.address}
         onChangeText={(text) => setEditedData({ ...editedData, address: text })}
         style={styles.input}
@@ -119,14 +119,14 @@ const EditProfileScreen = ({ route, navigation }) => {
         onPress={handleUpdate}
         style={styles.updateButton}
       >
-        Update Profile
+        Cập nhật hồ sơ
       </Button>
       <Button
         mode="outlined"
         onPress={() => navigation.goBack()}
         style={styles.cancelButton}
       >
-        Cancel
+        Hủy bỏ
       </Button>
     </ScrollView>
   );

@@ -48,15 +48,13 @@ const PaymentScreen = ({ route, navigation }) => {
     }
   };
 
-
-  
   const handlePayment = () => {
     if (paymentMethod === "momo") {
       Alert.alert(
         "Thanh toán MoMo",
         `Đang chuyển hướng đến ứng dụng MoMo để thanh toán ${orderDetails.totalPrice.toFixed(
           2
-        )} đ cho đơn hàng #${orderDetails._id}`,
+        )} VND cho đơn hàng #${orderDetails._id}`,
         [
           {
             text: "OK",
@@ -168,10 +166,10 @@ const PaymentScreen = ({ route, navigation }) => {
       <View style={styles.orderSummary}>
         <Text style={styles.summaryTitle}>Tóm tắt đơn hàng</Text>
         <Text>Mã đơn hàng: #{orderDetails._id}</Text>
-        
+
         <Text>Số lượng sản phẩm: {orderDetails.products.length}</Text>
         <Text style={styles.totalPrice}>
-          Tổng tiền: {orderDetails.totalPrice.toFixed(2)} $
+          Tổng tiền: {orderDetails.totalPrice.toFixed(2)} VND
         </Text>
       </View>
 
