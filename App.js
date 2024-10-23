@@ -116,7 +116,7 @@ const App = () => {
               options={{ headerShown: false }}
             />
             <Stack.Screen
-              name="ProductDetail"
+              name="Chi tiết sản phẩm"
               component={ProductDetailScreen}
               options={{ title: "Chi tiết sản phẩm" }}
             />
