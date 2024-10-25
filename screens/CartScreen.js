@@ -180,11 +180,28 @@ const CartScreen = ({ navigation }) => {
       );
       return;
     }
-
+  
     const selectedCartItems = cartItems.filter((item) =>
       selectedItems.has(item.productId._id)
     );
-
+  
+    // Kiểm tra tồn kho (stock) của sản phẩm
+    const outOfStockItems = selectedCartItems.filter(
+      (item) => item.productId.stock === 0
+    );
+  
+    if (outOfStockItems.length > 0) {
+      // Nếu có sản phẩm hết hàng
+      const outOfStockNames = outOfStockItems
+        .map((item) => item.productId.name)
+        .join(", ");
+      Alert.alert(
+        "Thông báo",
+        `Các sản phẩm sau đã hết hàng: ${outOfStockNames}. Vui lòng bỏ chọn hoặc kiểm tra lại sau.`
+      );
+      return;
+    }
+  
     try {
       const response = await axios.post("https://mma301.onrender.com/orders", {
         userId: user.id,
@@ -201,6 +218,7 @@ const CartScreen = ({ navigation }) => {
       Alert.alert("Lỗi", "Không thể tạo đơn hàng. Vui lòng thử lại.");
     }
   };
+  
 
   const calculateTotalPrice = (items) => {
     return items.reduce(
@@ -270,8 +288,9 @@ const CartScreen = ({ navigation }) => {
           />
           <View style={styles.checkoutContainer}>
             <Text style={styles.totalPriceText}>
-              Tổng: {totalSelectedPrice.toFixed(2)} VND
+              Tổng: {totalSelectedPrice.toLocaleString('vi-VN')} VND
             </Text>
+
             <TouchableOpacity
               style={styles.checkoutButton}
               onPress={handleCheckout}

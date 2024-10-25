@@ -110,8 +110,7 @@ const PaymentScreen = ({ route, navigation }) => {
     } else if (paymentMethod === "cod") {
       Alert.alert(
         "Thanh toán khi nhận hàng",
-        `Đơn hàng #${
-          orderDetails._id
+        `Đơn hàng #${orderDetails._id
         } sẽ được thanh toán ${orderDetails.totalPrice.toFixed(
           2
         )} đ khi giao hàng.`,
@@ -169,8 +168,9 @@ const PaymentScreen = ({ route, navigation }) => {
 
         <Text>Số lượng sản phẩm: {orderDetails.products.length}</Text>
         <Text style={styles.totalPrice}>
-          Tổng tiền: {orderDetails.totalPrice.toFixed(2)} VND
+          Tổng tiền: {orderDetails.totalPrice.toLocaleString('vi-VN')} VND
         </Text>
+
       </View>
 
       <View style={styles.paymentMethods}>

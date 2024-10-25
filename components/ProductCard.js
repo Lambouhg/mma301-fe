@@ -4,13 +4,16 @@ import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
 const ProductCard = ({ product, isSelected, onPress }) => {
   return (
     <TouchableOpacity
-      onPress={onPress}
-      style={[styles.card, isSelected ? styles.selectedCard : null]}
-    >
-      <Image source={{ uri: product.imageUrl }} style={styles.image} />
-      <Text style={styles.name}>{product.name}</Text>
-      <Text style={styles.price}>{product.price.toFixed(2)} VND</Text>
-    </TouchableOpacity>
+    onPress={onPress}
+    style={[styles.card, isSelected ? styles.selectedCard : null]}
+  >
+    <Image source={{ uri: product.imageUrl }} style={styles.image} />
+    <Text style={styles.name}>{product.name}</Text>
+    <Text style={styles.price}>
+      {product.price.toLocaleString('vi-VN')} VND
+    </Text>
+  </TouchableOpacity>
+  
   );
 };
 
