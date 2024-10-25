@@ -54,9 +54,10 @@ const ProductDetailScreen = ({ route, navigation }) => {
         <Text style={styles.title}>{product.name}</Text>
         <Text style={styles.price}>
           {product.price
-            .toLocaleString("vi-VN", { style: "currency", currency: "VND" })
-            .replace("₫", "VND")}
+            .toLocaleString("vi-VN")
+            .replace(",", ".") + " VND"}
         </Text>
+
 
         <View style={styles.detailsContainer}>
           <DetailItem icon="trademark" text={`Thương hiệu: ${product.brand}`} />

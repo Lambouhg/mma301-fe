@@ -73,7 +73,10 @@ const ListOrderDetailScreen = ({ route, navigation }) => {
       <Text style={styles.sectionTitle}>Thông tin đơn hàng</Text>
       <Text>Mã đơn hàng: {orderDetails.id}</Text>
       <Text>Ngày đặt hàng: {orderDetails.date}</Text>
-      <Text>Tổng tiền: {orderDetails.totalPrice} VND</Text>
+      <Text>
+        Tổng tiền: {orderDetails.totalPrice.toLocaleString('vi-VN')} VND
+      </Text>
+
       <Text>Phương thức thanh toán: {orderDetails.paymentMethod}</Text>
       <Text>
         Trạng thái đơn hàng:{" "}
@@ -104,7 +107,10 @@ const ListOrderDetailScreen = ({ route, navigation }) => {
               style={styles.productImage}
             />
             <Text style={styles.productName}>{item.name}</Text>
-            <Text>Giá: {item.price} VND</Text>
+            <Text>
+              Giá: {item.price.toLocaleString('vi-VN')} VND
+            </Text>
+
             <Text>Số lượng: {item.quantity}</Text>
             <Text>Thương hiệu: {item.brand}</Text>
             <Text>Danh mục: {item.category}</Text>
@@ -153,8 +159,8 @@ const styles = StyleSheet.create({
       status === "Completed"
         ? "green"
         : status === "Pending"
-        ? "orange"
-        : "red",
+          ? "orange"
+          : "red",
     fontWeight: "bold",
   }),
   centerContainer: {

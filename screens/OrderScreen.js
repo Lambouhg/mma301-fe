@@ -88,7 +88,7 @@ const OrderScreen = ({ route, navigation }) => {
           [
             {
               text: "Không",
-              onPress: () => {},
+              onPress: () => { },
               style: "cancel",
             },
             {
@@ -124,8 +124,9 @@ const OrderScreen = ({ route, navigation }) => {
           <Text style={styles.productTitle}>{item.productId.name}</Text>
           <Text style={styles.productQuantity}>Số lượng: {item.quantity}</Text>
           <Text style={styles.productPrice}>
-            Giá: {totalProductPrice.toFixed(2)} VND
+            Giá: {totalProductPrice.toLocaleString('vi-VN')} VND
           </Text>
+
         </View>
       </View>
     );
@@ -169,8 +170,9 @@ const OrderScreen = ({ route, navigation }) => {
         keyExtractor={(item) => item.productId._id}
       />
       <Text style={styles.totalPrice}>
-        Tổng tiền: {orderDetails.totalPrice.toFixed(2)} VND
+        Tổng tiền: {orderDetails.totalPrice.toLocaleString('vi-VN')} VND
       </Text>
+
       <TouchableOpacity
         style={styles.paymentButton}
         onPress={handlePayment}

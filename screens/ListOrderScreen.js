@@ -48,7 +48,10 @@ const ListOrderScreen = ({ navigation }) => {
     <View style={styles.orderItem}>
       <Text style={styles.orderId}>Mã đơn hàng: {item.id}</Text>
       <Text style={styles.orderDate}>Thời gian đặt hàng: {item.date}</Text>
-      <Text style={styles.orderTotal}>Tổng tiền: {item.totalPrice} VND</Text>
+      <Text style={styles.orderTotal}>
+        Tổng tiền: {item.totalPrice.toLocaleString('vi-VN')} VND
+      </Text>
+
       <Text style={styles.orderStatus}>
         Trạng thái:{" "}
         <Text style={styles.statusText(item.status)}>{item.status}</Text>
@@ -158,8 +161,8 @@ const styles = StyleSheet.create({
       status === "Completed"
         ? "green"
         : status === "Pending"
-        ? "orange"
-        : "red",
+          ? "orange"
+          : "red",
     fontWeight: "bold",
   }),
   productHeader: {
