@@ -99,7 +99,7 @@ const ListOrderScreen = ({ navigation }) => {
         <Text style={styles.emptyText}>Bạn chưa có đơn hàng nào.</Text>
         <TouchableOpacity
           style={styles.shopNowButton}
-          onPress={() => navigation.navigate("Home")}
+          onPress={() => navigation.navigate("Trang chủ")}
         >
           <Text style={styles.shopNowButtonText}>Mua sắm ngay</Text>
         </TouchableOpacity>
