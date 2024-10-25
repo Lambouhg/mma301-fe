@@ -21,7 +21,7 @@ import ListOrderDetailScreen from "./screens/ListOrderDetailScreen";
 import VerifyAccountScreen from "./screens/VerifyAccountScreen";
 import ForgetPasswordScreen from "./screens/ForgetPassword";
 import NewPasswordScreen from "./screens/NewPassword";
-
+import MapScreen from "./screens/MapScreen";
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -69,6 +69,16 @@ const TabNavigator = () => {
         options={{
           tabBarIcon: ({ color, size }) => (
             <Icon name="cart-outline" color={color} size={size} />
+          ),
+          headerShown: true,
+        }}
+      />
+      <Tab.Screen
+        name="Vị trí"
+        component={MapScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="map" color={color} size={size} />
           ),
           headerShown: true,
         }}
