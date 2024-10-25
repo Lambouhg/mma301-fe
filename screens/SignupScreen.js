@@ -17,7 +17,7 @@ const SignupScreen = ({ navigation }) => {
         "Đăng ký thành công!",
         "Hãy kiểm tra email của bạn để nhận mã xác thực tài khoản."
       );
-      navigation.navigate("Xác thực tài khoản", { email });
+      navigation.navigate("Xác thực tài khoản", { email, mode: "register" });
     } catch (error) {
       Alert.alert("Lỗi đăng ký!", error.message);
     }

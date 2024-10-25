@@ -32,6 +32,18 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const resetPassword = async (email, newPassword) => {
+    try {
+      const response = await axios.post(
+        "https://mma301.onrender.com/users/reset-password",
+        { email, newPassword }
+      );
+      return { success: response.data };
+    } catch (error) {
+      throw error.response.data;
+    }
+  };
+
   const login = async (email, password) => {
     try {
       const response = await axios.post(
@@ -55,7 +67,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, signup, login, logout, verifyCode }}>
+    <AuthContext.Provider value={{ user, signup, login, logout, verifyCode, resetPassword }}>
       {children}
     </AuthContext.Provider>
   );
