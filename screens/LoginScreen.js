@@ -45,6 +45,12 @@ const LoginScreen = ({ navigation }) => {
               style={styles.input}
               onSubmitEditing={handleLogin}
             />
+            <Text
+              style={styles.forgetPasswordText}
+              onPress={() => navigation.navigate("Quên mật khẩu")}
+            >
+              Forget password
+            </Text>
             <Button
               mode="contained"
               onPress={handleLogin}
@@ -88,6 +94,12 @@ const styles = StyleSheet.create({
   },
   input: {
     marginBottom: 20,
+  },
+  forgetPasswordText: {
+    color: "#007BFF",
+    alignSelf: "flex-end",
+    marginBottom: 15,
+    fontSize: 14,
   },
   button: {
     marginTop: 10,

@@ -19,6 +19,8 @@ import EditProfileScreen from "./screens/EditProfileScreen";
 import EditPasswordScreen from "./screens/EditPassword";
 import ListOrderDetailScreen from "./screens/ListOrderDetailScreen";
 import VerifyAccountScreen from "./screens/VerifyAccountScreen";
+import ForgetPasswordScreen from "./screens/ForgetPassword";
+import NewPasswordScreen from "./screens/NewPassword";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -61,7 +63,6 @@ const TabNavigator = () => {
           headerShown: false,
         }}
       />
-
       <Tab.Screen
         name="Giỏ hàng"
         component={CartScreen}
@@ -109,6 +110,16 @@ const App = () => {
               name="Đăng ký"
               component={SignupScreen}
               options={{ headerShown: true }}
+            />
+            <Stack.Screen
+              name="Quên mật khẩu" // Thêm màn hình quên mật khẩu
+              component={ForgetPasswordScreen}
+              options={{ title: "Quên mật khẩu", headerShown: true }} // Thay đổi tiêu đề nếu cần
+            />
+            <Stack.Screen
+              name="Nhập mật khẩu mới" // Thêm màn hình quên mật khẩu
+              component={NewPasswordScreen}
+              options={{ title: "Quên mật khẩu", headerShown: true }} // Thay đổi tiêu đề nếu cần
             />
             <Stack.Screen
               name="Main"

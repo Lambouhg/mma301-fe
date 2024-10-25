@@ -4,24 +4,26 @@ import { TextInput, Button } from "react-native-paper";
 import { useAuth } from "../context/AuthContext";
 
 const VerifyAccountScreen = ({ route, navigation }) => {
-  const { email } = route.params;
+  const { email, mode } = route.params;
   const { verifyCode } = useAuth();
   const [code, setCode] = useState("");
 
   const handleVerify = async () => {
+    console.log("Mode:", mode); // Kiểm tra giá trị của mode
     try {
       const response = await verifyCode(email, code);
       if (response.success) {
-        Alert.alert(
-          "Xác thực thành công",
-          "Tài khoản của bạn đã được xác thực, hãy đăng nhập và mua hàng!"
-        );
-        navigation.navigate("Đăng nhập");
+        if (mode === "register") {
+          Alert.alert(
+            "Xác thực thành công",
+            "Tài khoản của bạn đã được xác thực, hãy đăng nhập và mua hàng!"
+          );
+          navigation.navigate("Đăng nhập");
+        } else if (mode === "forgotPassword") {
+          navigation.navigate("Nhập mật khẩu mới", { email });
+        }
       } else {
-        throw new Error(
-          "Mã xác thực không hợp lệ. Vui lòng nhập lại!",
-          response.success
-        );
+        throw new Error("Mã xác thực không hợp lệ. Vui lòng nhập lại!");
       }
     } catch (error) {
       Alert.alert("Lỗi xác thực", "Mã xác thực không đúng, vui lòng nhập lại!");
