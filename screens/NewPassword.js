@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Alert } from "react-native";
+import { View, StyleSheet, Alert, Image } from "react-native";
 import { TextInput, Button, Text } from "react-native-paper";
 import { useAuth } from "../context/AuthContext";
 
@@ -28,6 +28,7 @@ const NewPasswordScreen = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
+    <Image source={require("../assets/logo.png")} style={styles.logo} />
       <TextInput
         label="Mật khẩu mới"
         secureTextEntry
@@ -62,6 +63,12 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 10,
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    alignSelf: "center",
+    marginBottom: 20,
   },
 });
 

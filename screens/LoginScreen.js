@@ -20,7 +20,7 @@ const LoginScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>
-        <Image source={require("../assets/logo.jpg")} style={styles.logo} />
+        <Image source={require("../assets/logo.png")} style={styles.logo} />
         <Card style={styles.card}>
           <Card.Content>
             <TextInput
