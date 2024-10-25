@@ -16,7 +16,7 @@ const LoginForm = ({ navigation }) => {
       );
       await AsyncStorage.setItem("token", response.data.token);
       await AsyncStorage.setItem("userId", response.data.userId);
-      navigation.navigate("Home");
+      navigation.navigate("Trang chủ");
     } catch (error) {
       Alert.alert("Login Failed", error.response.data.message);
     }
