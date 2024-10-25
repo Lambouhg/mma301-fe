@@ -180,16 +180,16 @@ const CartScreen = ({ navigation }) => {
       );
       return;
     }
-  
+
     const selectedCartItems = cartItems.filter((item) =>
       selectedItems.has(item.productId._id)
     );
-  
+
     // Kiểm tra tồn kho (stock) của sản phẩm
     const outOfStockItems = selectedCartItems.filter(
       (item) => item.productId.stock === 0
     );
-  
+
     if (outOfStockItems.length > 0) {
       // Nếu có sản phẩm hết hàng
       const outOfStockNames = outOfStockItems
@@ -201,7 +201,7 @@ const CartScreen = ({ navigation }) => {
       );
       return;
     }
-  
+
     try {
       const response = await axios.post("https://mma301.onrender.com/orders", {
         userId: user.id,
@@ -218,7 +218,6 @@ const CartScreen = ({ navigation }) => {
       Alert.alert("Lỗi", "Không thể tạo đơn hàng. Vui lòng thử lại.");
     }
   };
-  
 
   const calculateTotalPrice = (items) => {
     return items.reduce(
@@ -245,6 +244,31 @@ const CartScreen = ({ navigation }) => {
       </View>
     );
   }
+
+  const removeSelectedItems = async () => {
+    if (selectedItems.size === 0) {
+      Alert.alert("Thông báo", "Vui lòng chọn ít nhất một sản phẩm để xoá.");
+      return;
+    }
+
+    try {
+      await Promise.all(
+        Array.from(selectedItems).map((itemId) =>
+          axios.delete(`https://mma301.onrender.com/cart/${user.id}/${itemId}`)
+        )
+      );
+
+      // Cập nhật lại danh sách sản phẩm trong giỏ hàng
+      setCartItems((prevItems) =>
+        prevItems.filter((item) => !selectedItems.has(item.productId._id))
+      );
+      setSelectedItems(new Set()); // Bỏ chọn tất cả sản phẩm
+      Alert.alert("Thông báo", "Xoá sản phẩm thành công.");
+    } catch (error) {
+      console.error("Lỗi khi xoá sản phẩm:", error);
+      Alert.alert("Lỗi", "Không thể xoá sản phẩm. Vui lòng thử lại.");
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -286,18 +310,32 @@ const CartScreen = ({ navigation }) => {
             keyExtractor={(item) => item.productId._id}
             contentContainerStyle={styles.listContainer}
           />
-          <View style={styles.checkoutContainer}>
-            <Text style={styles.totalPriceText}>
-              Tổng: {totalSelectedPrice.toLocaleString('vi-VN')} VND
-            </Text>
 
-            <TouchableOpacity
-              style={styles.checkoutButton}
-              onPress={handleCheckout}
-            >
-              <Text style={styles.checkoutButtonText}>Mua hàng</Text>
-            </TouchableOpacity>
-          </View>
+<View style={styles.checkoutContainer}>
+  <View style={styles.totalPriceContainer}>
+    <Text style={styles.totalPriceText} numberOfLines={1}>
+      Tổng: {totalSelectedPrice.toLocaleString("vi-VN")} VND
+    </Text>
+  </View>
+  
+  <View style={styles.buttonGroup}>
+    <TouchableOpacity
+      style={styles.removeButton}
+      onPress={removeSelectedItems}
+    >
+      <MaterialIcons name="delete" size={18} color="#FFFFFF" />
+      <Text style={styles.removeButtonText}>Xóa</Text>
+    </TouchableOpacity>
+    
+    <TouchableOpacity
+      style={styles.checkoutButton}
+      onPress={handleCheckout}
+    >
+      <MaterialIcons name="shopping-cart-checkout" size={18} color="#FFFFFF" />
+      <Text style={styles.checkoutButtonText}>Mua</Text>
+    </TouchableOpacity>
+  </View>
+</View>
         </>
       )}
     </View>
@@ -385,49 +423,84 @@ const styles = StyleSheet.create({
   listContainer: {
     paddingBottom: 20,
   },
-  checkoutContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: "#FFFFFF",
-    padding: 15,
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: -3 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 5,
-    paddingBottom: 70,
-  },
-  totalPriceContainer: {
-    flex: 1,
-  },
-  totalPriceLabel: {
-    fontSize: 14,
-    color: "#666",
-  },
-  totalPriceText: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#0C0F14",
-  },
-  checkoutButton: {
-    backgroundColor: "#FFA07A",
+  removeButton: {
+    backgroundColor: "#FF6347",
     paddingVertical: 12,
-    paddingHorizontal: 24,
+    paddingHorizontal: 16,
     borderRadius: 25,
+    marginRight: 10,
   },
-  checkoutButtonText: {
+  removeButtonText: {
     color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "bold",
   },
-  loadingText: {
-    marginTop: 10,
-    fontSize: 16,
-    color: "#666",
-  },
+
+checkoutContainer: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  backgroundColor: "#FFFFFF",
+  padding: 12,
+  paddingHorizontal: 16,
+  borderTopLeftRadius: 25,
+  borderTopRightRadius: 25,
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: -3 },
+  shadowOpacity: 0.1,
+  shadowRadius: 5,
+  elevation: 5,
+  paddingBottom: 80,
+},
+
+totalPriceContainer: {
+  flex: 1, // Cho phép container giá tiền co giãn
+  marginRight: 10,
+},
+
+totalPriceText: {
+  fontSize: 14,
+  fontWeight: "bold",
+  color: "#0C0F14",
+},
+
+buttonGroup: {
+  flexDirection: 'row',
+  alignItems: 'center',
+},
+
+removeButton: {
+  backgroundColor: "#FF6347",
+  paddingVertical: 10,
+  paddingHorizontal: 20,
+  borderRadius: 20,
+  flexDirection: 'row',
+  alignItems: 'center',
+  marginRight: 8,
+},
+
+removeButtonText: {
+  color: "#FFFFFF",
+  fontSize: 14,
+  fontWeight: "bold",
+  marginLeft: 4,
+},
+
+checkoutButton: {
+  backgroundColor: "#007BFF", 
+  paddingVertical: 10,
+  paddingHorizontal: 20,
+  borderRadius: 20,
+  flexDirection: 'row',
+  alignItems: 'center',
+},
+
+checkoutButtonText: {
+  color: "#FFFFFF", 
+  fontSize: 14,
+  fontWeight: "bold",
+  marginLeft: 4,
+},
 });
 
 export default CartScreen;
