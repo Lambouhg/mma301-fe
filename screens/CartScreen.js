@@ -150,7 +150,6 @@ const CartScreen = ({ navigation }) => {
         onPress={() =>
           navigation.navigate("Chi tiết sản phẩm", {
             product: item.productId,
-            refreshCart: fetchCartItems,
           })
         }
       />
@@ -331,7 +330,7 @@ const CartScreen = ({ navigation }) => {
       style={styles.checkoutButton}
       onPress={handleCheckout}
     >
-      <MaterialIcons name="shopping-cart-checkout" size={18} color="#FFFFFF" />
+      <MaterialIcons name="shopping-cart" size={18} color="#FFFFFF" />
       <Text style={styles.checkoutButtonText}>Mua</Text>
     </TouchableOpacity>
   </View>
@@ -450,7 +449,7 @@ checkoutContainer: {
   shadowOpacity: 0.1,
   shadowRadius: 5,
   elevation: 5,
-  paddingBottom: 80,
+  paddingBottom: 70,
 },
 
 totalPriceContainer: {
