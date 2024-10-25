@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Alert } from "react-native";
+import { View, StyleSheet, Alert, Image } from "react-native";
 import { TextInput, Button } from "react-native-paper";
 import { useAuth } from "../context/AuthContext";
 
@@ -32,6 +32,7 @@ const VerifyAccountScreen = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
+    <Image source={require("../assets/logo.png")} style={styles.logo} />
       <TextInput
         label="Nhập mã để xác thực tài khoản"
         value={code}
@@ -57,6 +58,12 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 10,
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    alignSelf: "center",
+    marginBottom: 20,
   },
 });
 

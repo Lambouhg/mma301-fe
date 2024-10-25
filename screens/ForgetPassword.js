@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Alert } from "react-native";
+import { View, StyleSheet, Alert, Image } from "react-native";
 import { TextInput, Button } from "react-native-paper";
 import axios from "axios"; // Nhớ cài đặt axios nếu bạn chưa có
 
@@ -21,6 +21,7 @@ const ForgetPassword = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+    <Image source={require("../assets/logo.png")} style={styles.logo} />
       <TextInput
         label="Nhập email của bạn"
         value={email}
@@ -46,6 +47,12 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 10,
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    alignSelf: "center",
+    marginBottom: 20,
   },
 });
 
