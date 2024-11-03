@@ -1,16 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Alert, ScrollView } from "react-native";
-import {
-  Text,
-  ActivityIndicator,
-  Card,
-  Title,
-  Paragraph,
-  Button,
-} from "react-native-paper";
+import { View, StyleSheet, Alert, ScrollView, ImageBackground, Pressable } from "react-native";
+import { Text, ActivityIndicator, Button, Avatar } from "react-native-paper";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
-import Icon from "react-native-vector-icons/MaterialIcons"; // Import icon
+import Icon from "react-native-vector-icons/MaterialIcons";
+import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
 
 const ProfileScreen = ({ navigation, route }) => {
   const { user, logout } = useAuth();
@@ -19,13 +13,7 @@ const ProfileScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     fetchProfile();
-  }, [user]);
-
-  useEffect(() => {
-    if (route.params?.updated) {
-      fetchProfile();
-    }
-  }, [route.params]);
+  }, [user, route.params?.updated]);
 
   const fetchProfile = async () => {
     try {
@@ -38,7 +26,6 @@ const ProfileScreen = ({ navigation, route }) => {
       );
       setProfileData(response.data);
     } catch (error) {
-      console.error("Error fetching profile data:", error);
       Alert.alert("Error", "Failed to fetch profile data");
     } finally {
       setLoading(false);
@@ -46,16 +33,42 @@ const ProfileScreen = ({ navigation, route }) => {
   };
 
   const handleLogout = () => {
-    logout();
-    navigation.navigate("Đăng nhập");
-    Alert.alert("Đăng xuất thành công");
+    Alert.alert(
+      "Đăng xuất",
+      "Bạn có chắc chắn muốn đăng xuất?",
+      [
+        {
+          text: "Hủy",
+          style: "cancel"
+        },
+        {
+          text: "Đăng xuất",
+          onPress: () => {
+            logout();
+            navigation.navigate("Đăng nhập");
+          },
+          style: 'destructive'
+        }
+      ]
+    );
   };
+
+  const ProfileItem = ({ icon, label, value }) => (
+    <Animated.View entering={FadeInDown.delay(300).springify()} style={styles.profileItem}>
+      <View style={styles.iconContainer}>
+        <Icon name={icon} size={24} color="#007AFF" />
+      </View>
+      <View style={styles.profileItemContent}>
+        <Text style={styles.label}>{label}</Text>
+        <Text style={styles.value}>{value}</Text>
+      </View>
+    </Animated.View>
+  );
 
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator animating={true} size="large" />
-        <Text>Loading...</Text>
+        <ActivityIndicator size="large" color="#007AFF" />
       </View>
     );
   }
@@ -63,64 +76,72 @@ const ProfileScreen = ({ navigation, route }) => {
   if (!profileData) {
     return (
       <View style={styles.loadingContainer}>
-        <Text>Unable to fetch profile data.</Text>
+        <Text style={styles.errorText}>Không thể tải thông tin người dùng</Text>
       </View>
     );
   }
 
   return (
-    <ScrollView style={styles.container}>
-      <Card style={styles.card}>
-        <Card.Content>
-          <Title style={styles.title}>Thông tin cá nhân</Title>
-          <Paragraph style={styles.profileInfo}>
-            <Icon name="person" size={18} color="#007bff" /> Tên người dùng:{" "}
-            {profileData.username}
-          </Paragraph>
-          <Paragraph style={styles.profileInfo}>
-            <Icon name="email" size={18} color="#007bff" /> Email:{" "}
-            {profileData.email}
-          </Paragraph>
-          <Paragraph style={styles.profileInfo}>
-            <Icon name="phone" size={18} color="#007bff" /> Số điện thoại:{" "}
-            {profileData.phoneNumber}
-          </Paragraph>
-          <Paragraph style={styles.profileInfo}>
-            <Icon name="home" size={18} color="#007bff" /> Địa chỉ:{" "}
-            {profileData.address}
-          </Paragraph>
-          <Paragraph style={styles.profileInfo}>
-            <Icon name="calendar-today" size={18} color="#007bff" /> Ngày tạo:{" "}
-            {new Date(profileData.createdAt).toLocaleDateString()}
-          </Paragraph>
-          <Button
-            mode="contained"
-            onPress={() =>
-              navigation.navigate("Chỉnh sửa hồ sơ", { profileData })
-            }
-            style={styles.editButton}
-            icon="pencil"
-          >
-            Chỉnh sửa hồ sơ
-          </Button>
-          <Button
-            mode="contained"
-            onPress={() => navigation.navigate("Đổi mật khẩu")}
-            style={styles.editPasswordButton}
-            icon="lock-outline"
-          >
-            Đổi mật khẩu
-          </Button>
-        </Card.Content>
-      </Card>
-      <Button
-        mode="contained"
-        onPress={handleLogout}
-        style={styles.logoutButton}
-        icon="logout"
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      <ImageBackground
+        source={{ uri: 'https://images.unsplash.com/photo-1557683316-973673baf926' }}
+        style={styles.headerBackground}
       >
-        Đăng xuất
-      </Button>
+        <View style={styles.headerOverlay} />
+        <Animated.View entering={FadeInUp.delay(200)} style={styles.headerContent}>
+          <Avatar.Text
+            size={80}
+            label={profileData.username.substring(0, 2).toUpperCase()}
+            style={styles.avatar}
+          />
+          <Text style={styles.username}>{profileData.username}</Text>
+          <Text style={styles.email}>{profileData.email}</Text>
+        </Animated.View>
+      </ImageBackground>
+
+      <View style={styles.contentContainer}>
+        <ProfileItem
+          icon="phone"
+          label="Số điện thoại"
+          value={profileData.phoneNumber}
+        />
+        <ProfileItem
+          icon="home"
+          label="Địa chỉ"
+          value={profileData.address}
+        />
+        <ProfileItem
+          icon="calendar-today"
+          label="Ngày tạo"
+          value={new Date(profileData.createdAt).toLocaleDateString()}
+        />
+
+        <Animated.View entering={FadeInDown.delay(400)} style={styles.buttonGroup}>
+          <Pressable
+            style={styles.editButton}
+            onPress={() => navigation.navigate("Chỉnh sửa hồ sơ", { profileData })}
+          >
+            <Icon name="edit" size={24} color="#007AFF" />
+            <Text style={styles.buttonText}>Chỉnh sửa hồ sơ</Text>
+          </Pressable>
+
+          <Pressable
+            style={styles.passwordButton}
+            onPress={() => navigation.navigate("Đổi mật khẩu")}
+          >
+            <Icon name="lock" size={24} color="#007AFF" />
+            <Text style={styles.buttonText}>Đổi mật khẩu</Text>
+          </Pressable>
+
+          <Pressable
+            style={styles.logoutButton}
+            onPress={handleLogout}
+          >
+            <Icon name="logout" size={24} color="#FF3B30" />
+            <Text style={[styles.buttonText, { color: '#FF3B30' }]}>Đăng xuất</Text>
+          </Pressable>
+        </Animated.View>
+      </View>
     </ScrollView>
   );
 };
@@ -128,50 +149,146 @@ const ProfileScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: '#f8f9fa',
+  },
+  headerBackground: {
+    height: 200,
+    width: '100%',
+  },
+  headerOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+  },
+  headerContent: {
+    height: 200,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  avatar: {
+    backgroundColor: '#007AFF',
+    marginBottom: 10,
+  },
+  username: {
+    fontSize: 24,
+    fontWeight: '600',
+    color: 'white',
+    marginBottom: 4,
+  },
+  email: {
+    fontSize: 16,
+    color: 'rgba(255,255,255,0.9)',
+  },
+  contentContainer: {
+    flex: 1,
+    backgroundColor: '#f8f9fa',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    marginTop: -20,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+  },
+  profileItem: {
+    flexDirection: 'row',
+    backgroundColor: 'white',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  iconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(0,122,255,0.1)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  profileItemContent: {
+    flex: 1,
+  },
+  label: {
+    fontSize: 14,
+    color: '#6c757d',
+    marginBottom: 4,
+  },
+  value: {
+    fontSize: 16,
+    color: '#212529',
+    fontWeight: '500',
+  },
+  buttonGroup: {
+    marginTop: 20,
+    marginBottom: 30,
+  },
+  editButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  passwordButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  logoutButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    padding: 16,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  buttonText: {
+    marginLeft: 12,
+    fontSize: 16,
+    color: '#007AFF',
+    fontWeight: '500',
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  card: {
-    padding: 20,
-    marginVertical: 20,
-    borderRadius: 10,
-    backgroundColor: "#fff",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 5,
-  },
-  title: {
-    fontSize: 26,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
-    color: "#333",
-  },
-  profileInfo: {
+  errorText: {
     fontSize: 16,
-    marginBottom: 10,
-    color: "#555",
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  editButton: {
-    marginTop: 20,
-    backgroundColor: "#4caf50",
-  },
-  editPasswordButton: {
-    marginTop: 10,
-    backgroundColor: "#1976d2",
-  },
-  logoutButton: {
-    marginTop: 20,
-    backgroundColor: "#ff5252",
+    color: '#FF3B30',
   },
 });
 
