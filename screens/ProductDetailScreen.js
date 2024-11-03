@@ -81,16 +81,10 @@ const ProductDetailScreen = ({ route, navigation }) => {
                 {product.sizes.map((size) => (
                   <TouchableOpacity
                     key={size}
-                    style={[
-                      styles.sizeButton,
-                      selectedSize === size && styles.selectedSize,
-                    ]}
+                    style={[styles.sizeButton, selectedSize === size && styles.selectedSize]}
                     onPress={() => setSelectedSize(size)}
                   >
-                    <Text style={[
-                      styles.sizeText,
-                      selectedSize === size && styles.selectedSizeText
-                    ]}>{size}</Text>
+                    <Text style={[styles.sizeText, selectedSize === size && styles.selectedSizeText]}>{size}</Text>
                   </TouchableOpacity>
                 ))}
               </ScrollView>
@@ -103,16 +97,10 @@ const ProductDetailScreen = ({ route, navigation }) => {
                 {productColors.map((color) => (
                   <TouchableOpacity
                     key={color}
-                    style={[
-                      styles.colorButton,
-                      selectedColor === color && styles.selectedColor,
-                    ]}
+                    style={[styles.colorButton, selectedColor === color && styles.selectedColor]}
                     onPress={() => setSelectedColor(color)}
                   >
-                    <Text style={[
-                      styles.colorText,
-                      selectedColor === color && styles.selectedColorText
-                    ]}>{color}</Text>
+                    <Text style={[styles.colorText, selectedColor === color && styles.selectedColorText]}>{color}</Text>
                   </TouchableOpacity>
                 ))}
               </ScrollView>
@@ -177,12 +165,12 @@ const DetailItem = ({ icon, label, value }) => (
 const styles = {
   container: {
     flex: 1,
-    backgroundColor: "#f9f9f9", // Light background for a modern look
+    backgroundColor: "#f9f9f9",
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
-    padding: 16,
+    padding: 10, // Reduced padding
     position: "absolute",
     top: 0,
     left: 0,
@@ -190,10 +178,10 @@ const styles = {
     zIndex: 1,
   },
   headerButton: {
-    width: 40,
-    height: 40,
+    width: 36, // Reduced width and height
+    height: 36,
     backgroundColor: "rgba(255, 255, 255, 0.9)",
-    borderRadius: 20,
+    borderRadius: 18,
     justifyContent: "center",
     alignItems: "center",
     shadowColor: "#000",
@@ -204,7 +192,7 @@ const styles = {
   },
   image: {
     width: width,
-    height: width * 1.2,
+    height: width * 1.1, // Adjusted height for a better fit
     resizeMode: "cover",
   },
   infoCard: {
@@ -212,8 +200,8 @@ const styles = {
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
     marginTop: -30,
-    padding: 24,
-    paddingBottom: 100,
+    padding: 16, // Reduced padding
+    paddingBottom: 80, // Adjusted bottom padding
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
@@ -224,17 +212,17 @@ const styles = {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 8,
+    marginBottom: 6, // Reduced margin
   },
   brand: {
-    fontSize:20 ,
+    fontSize: 18, // Slightly smaller font size
     color: "#666",
     fontWeight: "600",
   },
   stockBadge: {
     backgroundColor: "#E8F5E9",
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    paddingHorizontal: 8, // Reduced padding
+    paddingVertical: 4, // Reduced padding
     borderRadius: 20,
   },
   stockText: {
@@ -243,45 +231,45 @@ const styles = {
     fontWeight: "600",
   },
   title: {
-    fontSize: 24,
+    fontSize: 22, // Slightly smaller font size
     fontWeight: "700",
     color: "#333",
-    marginBottom: 8,
+    marginBottom: 6, // Reduced margin
   },
   price: {
-    fontSize: 20,
+    fontSize: 18, // Slightly smaller font size
     fontWeight: "700",
     color: "#007AFF",
-    marginBottom: 24,
+    marginBottom: 10, // Reduced margin
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 16, // Slightly smaller font size
     fontWeight: "600",
     color: "#333",
-    marginBottom: 16,
-    marginTop: 24,
+    marginBottom: 12, // Reduced margin
+    marginTop: 10, // Adjusted margin
   },
   sizesContainer: {
     flexDirection: "row",
-    marginBottom: 24,
+    marginBottom: 5, // Reduced margin
   },
   sizeButton: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
+    width: 30, // Reduced size button width and height
+    height: 30,
+    borderRadius: 5,
     borderWidth: 1,
     borderColor: "#E0E0E0",
     justifyContent: "center",
     alignItems: "center",
-    marginRight: 12,
-    backgroundColor: "#f5f5f5", // Light background for size buttons
+    marginRight: 8, // Reduced margin
+    backgroundColor: "#f5f5f5",
   },
   selectedSize: {
-    backgroundColor: "#007AFF", // Highlight selected size
+    backgroundColor: "#007AFF",
     borderColor: "#007AFF",
   },
   sizeText: {
-    fontSize: 16,
+    fontSize: 14, // Slightly smaller font size
     color: "#333",
   },
   selectedSizeText: {
@@ -289,25 +277,25 @@ const styles = {
   },
   colorsContainer: {
     flexDirection: "row",
-    marginBottom: 24,
+    marginBottom: 20, // Reduced margin
   },
   colorButton: {
-    paddingHorizontal: 20,
-    height: 40,
-    borderRadius: 20,
+    paddingHorizontal: 16, // Reduced padding
+    height: 35, // Adjusted height
+    borderRadius: 10, // Adjusted border radius
     borderWidth: 1,
     borderColor: "#E0E0E0",
     justifyContent: "center",
     alignItems: "center",
-    marginRight: 12,
-    backgroundColor: "#f5f5f5", // Light background for color buttons
+    marginRight: 8, // Reduced margin
+    backgroundColor: "#f5f5f5",
   },
   selectedColor: {
-    backgroundColor: "#007AFF", // Highlight selected color
+    backgroundColor: "#007AFF",
     borderColor: "#007AFF",
   },
   colorText: {
-    fontSize: 14,
+    fontSize: 12, // Slightly smaller font size
     color: "#333",
   },
   selectedColorText: {
@@ -316,16 +304,16 @@ const styles = {
   detailsGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    marginBottom: 24,
+    marginBottom: 10, // Reduced margin
   },
   detailItem: {
     flexDirection: "row",
     alignItems: "center",
     width: "50%",
-    marginBottom: 16,
+    marginBottom: 10, // Reduced margin
   },
   detailTextContainer: {
-    marginLeft: 12,
+    marginLeft: 10, // Reduced margin
   },
   detailLabel: {
     fontSize: 12,
@@ -337,9 +325,10 @@ const styles = {
     fontWeight: "500",
   },
   description: {
-    fontSize: 16,
+    fontSize: 14, // Slightly smaller font size
     color: "#666",
-    lineHeight: 24,
+    lineHeight: 20, // Adjusted line height
+    marginBottom: 20, // Reduced margin
   },
   bottomBar: {
     position: "absolute",
@@ -348,8 +337,8 @@ const styles = {
     right: 0,
     backgroundColor: "rgba(255, 255, 255, 0.9)",
     flexDirection: "row",
-    padding: 16,
-    paddingBottom: 32,
+    padding: 12, // Reduced padding
+    paddingBottom: 24, // Adjusted bottom padding
     borderTopWidth: 1,
     borderTopColor: "#E0E0E0",
     shadowColor: "#000",
@@ -363,24 +352,24 @@ const styles = {
     alignItems: "center",
     backgroundColor: "#F5F5F5",
     borderRadius: 25,
-    marginRight: 16,
+    marginRight: 12,
   },
   quantityButton: {
-    width: 40,
-    height: 40,
+    width: 36, // Reduced button size
+    height: 36,
     justifyContent: "center",
     alignItems: "center",
   },
   quantityInput: {
-    width: 40,
+    width: 36, // Reduced input width
     textAlign: "center",
-    fontSize: 16,
+    fontSize: 14, // Slightly smaller font size
   },
   addToCartButton: {
     flex: 1,
-    backgroundColor: "#007AFF", // Primary button color
+    backgroundColor: "#007AFF",
     borderRadius: 25,
-    height: 50,
+    height: 45, // Reduced button height
     justifyContent: "center",
     alignItems: "center",
   },
