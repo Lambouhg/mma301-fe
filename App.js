@@ -114,22 +114,22 @@ const App = () => {
             <Stack.Screen
               name="Đăng nhập"
               component={LoginScreen}
-              options={{ headerShown: true }}
+              options={{ headerShown: false }}
             />
             <Stack.Screen
               name="Đăng ký"
               component={SignupScreen}
-              options={{ headerShown: true }}
+              options={{ headerShown: false }}
             />
             <Stack.Screen
-              name="Quên mật khẩu" // Thêm màn hình quên mật khẩu
+              name="Quên mật khẩu"
               component={ForgetPasswordScreen}
-              options={{ title: "Quên mật khẩu", headerShown: true }} // Thay đổi tiêu đề nếu cần
+              options={{ title: "Quên mật khẩu", headerShown: false }}
             />
             <Stack.Screen
-              name="Nhập mật khẩu mới" // Thêm màn hình quên mật khẩu
+              name="Nhập mật khẩu mới"
               component={NewPasswordScreen}
-              options={{ title: "Quên mật khẩu", headerShown: true }} // Thay đổi tiêu đề nếu cần
+              options={{ title: "Nhập mật khẩu mới", headerShown: false }}
             />
             <Stack.Screen
               name="Main"
@@ -149,7 +149,7 @@ const App = () => {
             <Stack.Screen
               name="Xác thực tài khoản"
               component={VerifyAccountScreen}
-              options={{ title: "Xác thực tài khoản" }}
+              options={{ title: "Xác thực tài khoản", headerShown: false }}
             />
             <Stack.Screen
               name="Thanh toán"
