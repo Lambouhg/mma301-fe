@@ -159,7 +159,7 @@ const App = () => {
             <Stack.Screen
               name="Chỉnh sửa hồ sơ"
               component={EditProfileScreen}
-              options={{ title: "Update Profile" }}
+              options={{ title: "Chỉnh sửa hồ sơ" }}
             />
             <Stack.Screen
               name="Hỗ trợ"
