@@ -8,11 +8,11 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
-  const signup = async (username, email, password) => {
+  const signup = async (username, email, password, phoneNumber, address) => {
     try {
       const response = await axios.post(
         "https://mma301.onrender.com/users/signup",
-        { username, email, password }
+        { username, email, password, phoneNumber, address }
       );
       return response.data;
     } catch (error) {

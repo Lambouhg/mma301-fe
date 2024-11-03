@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { View, StyleSheet, Alert, Image, ImageBackground, ActivityIndicator } from "react-native";
-import { TextInput, Button, Text, Appbar, Card } from "react-native-paper";
+import React, { useState } from "react"; 
+import { View, StyleSheet, Alert, ImageBackground, ActivityIndicator } from "react-native";
+import { TextInput, Button, Text, Card } from "react-native-paper";
 import { useAuth } from "../context/AuthContext";
 
 const SignupScreen = ({ navigation }) => {
@@ -8,10 +8,12 @@ const SignupScreen = ({ navigation }) => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [address, setAddress] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSignup = async () => {
-    if (!username || !email || !password) {
+    if (!username || !email || !password || !phoneNumber || !address) {
       Alert.alert("Lỗi", "Vui lòng điền đầy đủ thông tin!");
       return;
     }
@@ -23,10 +25,14 @@ const SignupScreen = ({ navigation }) => {
       Alert.alert("Lỗi", "Mật khẩu phải có ít nhất 6 ký tự!");
       return;
     }
+    if (!/^\d{10,11}$/.test(phoneNumber)) {
+      Alert.alert("Lỗi", "Số điện thoại không hợp lệ!");
+      return;
+    }
 
     setLoading(true);
     try {
-      await signup(username, email, password);
+      await signup(username, email, password, phoneNumber, address);
       Alert.alert("Đăng ký thành công!", "Hãy kiểm tra email của bạn để nhận mã xác thực tài khoản.");
       navigation.navigate("Xác thực tài khoản", { email, mode: "register" });
     } catch (error) {
@@ -70,6 +76,23 @@ const SignupScreen = ({ navigation }) => {
               style={styles.input}
               left={<TextInput.Icon icon="lock" />}
             />
+            <TextInput
+              label="Số điện thoại"
+              value={phoneNumber}
+              onChangeText={setPhoneNumber}
+              mode="outlined"
+              style={styles.input}
+              left={<TextInput.Icon icon="phone" />}
+              keyboardType="phone-pad"
+            />
+            <TextInput
+              label="Địa chỉ"
+              value={address}
+              onChangeText={setAddress}
+              mode="outlined"
+              style={styles.input}
+              left={<TextInput.Icon icon="home" />}
+            />
           </Card>
 
           <Button
@@ -104,16 +127,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     backgroundColor: "rgba(255, 255, 255, 0.85)",
     borderRadius: 10,
-  },
-  appbar: {
-    backgroundColor: "transparent",
-    elevation: 0,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: "bold",
-    textAlign: "center",
-    color: "#6200ea",
   },
   innerContainer: {
     alignItems: "center",
