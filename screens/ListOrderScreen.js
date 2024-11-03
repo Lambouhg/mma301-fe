@@ -6,8 +6,12 @@ import {
   StyleSheet,
   ActivityIndicator,
   TouchableOpacity,
+  Dimensions,
 } from "react-native";
 import { useAuth } from "../context/AuthContext";
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+const { width } = Dimensions.get("window");
 
 const ListOrderScreen = ({ navigation }) => {
   const { user } = useAuth();
@@ -44,40 +48,108 @@ const ListOrderScreen = ({ navigation }) => {
     }
   };
 
-  const renderOrderItem = ({ item }) => (
-    <View style={styles.orderItem}>
-      <Text style={styles.orderId}>Mã đơn hàng: {item.id}</Text>
-      <Text style={styles.orderDate}>Thời gian đặt hàng: {item.date}</Text>
-      <Text style={styles.orderTotal}>
-        Tổng tiền: {item.totalPrice.toLocaleString('vi-VN')} VND
-      </Text>
+  const getStatusInfo = (status) => {
+    switch (status) {
+      case "Completed":
+        return {
+          bg: "#E7F7EE",
+          text: "#1D804B",
+          icon: "check-circle",
+          label: "Hoàn thành"
+        };
+      case "Pending":
+        return {
+          bg: "#FFF4E5",
+          text: "#E07C00",
+          icon: "clock-outline",
+          label: "Đang xử lý"
+        };
+      default:
+        return {
+          bg: "#FFEBEB",
+          text: "#D92D20",
+          icon: "close-circle",
+          label: "Đã hủy"
+        };
+    }
+  };
 
-      <Text style={styles.orderStatus}>
-        Trạng thái:{" "}
-        <Text style={styles.statusText(item.status)}>{item.status}</Text>
-      </Text>
-      <Text style={styles.productHeader}>Sản phẩm:</Text>
-      {item.products.map((product) => (
-        <Text key={product.id} style={styles.productName}>
-          {product.name}
-        </Text>
-      ))}
+  const renderOrderItem = ({ item }) => {
+    const statusInfo = getStatusInfo(item.status);
+    
+    return (
       <TouchableOpacity
-        style={styles.detailButton}
+        style={styles.orderItem}
         onPress={() =>
           navigation.navigate("Chi tiết đơn hàng", { order: item, user: user })
         }
       >
-        <Text style={styles.detailButtonText}>Xem chi tiết</Text>
+        <View style={styles.orderHeader}>
+          <View style={styles.orderIdContainer}>
+            <Icon name="shopping" size={20} color="#1E293B" />
+            <Text style={styles.orderId}>#{item.id}</Text>
+          </View>
+          <View style={[styles.statusBadge, { backgroundColor: statusInfo.bg }]}>
+            <Icon name={statusInfo.icon} size={16} color={statusInfo.text} />
+            <Text style={[styles.statusText, { color: statusInfo.text }]}>
+              {statusInfo.label}
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.orderInfo}>
+          <View style={styles.infoRow}>
+            <Icon name="calendar" size={16} color="#64748B" />
+            <Text style={styles.orderDate}>{item.date}</Text>
+          </View>
+          <View style={styles.infoRow}>
+            <Icon name="package-variant" size={16} color="#64748B" />
+            <Text style={styles.productCount}>
+              {item.products.length} sản phẩm
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.productsContainer}>
+          {item.products.slice(0, 2).map((product) => (
+            <View key={product.id} style={styles.productRow}>
+              <Icon name="circle-small" size={16} color="#CBD5E1" />
+              <Text style={styles.productName} numberOfLines={1}>
+                {product.name}
+              </Text>
+            </View>
+          ))}
+          {item.products.length > 2 && (
+            <TouchableOpacity style={styles.moreProductsButton}>
+              <Text style={styles.moreProducts}>
+                +{item.products.length - 2} sản phẩm khác
+              </Text>
+              <Icon name="chevron-right" size={16} color="#6366F1" />
+            </TouchableOpacity>
+          )}
+        </View>
+
+        <View style={styles.footer}>
+          <View style={styles.totalContainer}>
+            <Text style={styles.totalLabel}>Tổng tiền:</Text>
+            <Text style={styles.totalPrice}>
+              {item.totalPrice.toLocaleString('vi-VN')}đ
+            </Text>
+          </View>
+          <TouchableOpacity style={styles.viewDetailButton}>
+            <Text style={styles.viewDetailText}>Xem chi tiết</Text>
+            <Icon name="chevron-right" size={16} color="#6366F1" />
+          </TouchableOpacity>
+        </View>
       </TouchableOpacity>
-    </View>
-  );
+    );
+  };
 
   if (loading) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#007bff" />
-        <Text style={styles.loadingText}>Đang tải danh sách đơn hàng...</Text>
+        <ActivityIndicator size="large" color="#6366F1" />
+        <Text style={styles.loadingText}>Đang tải đơn hàng...</Text>
       </View>
     );
   }
@@ -85,8 +157,13 @@ const ListOrderScreen = ({ navigation }) => {
   if (error) {
     return (
       <View style={styles.centerContainer}>
+        <Icon name="alert-circle" size={48} color="#DC2626" />
         <Text style={styles.errorText}>{error}</Text>
-        <TouchableOpacity style={styles.retryButton} onPress={fetchOrders}>
+        <TouchableOpacity 
+          style={styles.retryButton}
+          onPress={fetchOrders}
+        >
+          <Icon name="refresh" size={20} color="#FFFFFF" />
           <Text style={styles.retryButtonText}>Thử lại</Text>
         </TouchableOpacity>
       </View>
@@ -96,12 +173,14 @@ const ListOrderScreen = ({ navigation }) => {
   if (orders.length === 0) {
     return (
       <View style={styles.centerContainer}>
-        <Text style={styles.emptyText}>Bạn chưa có đơn hàng nào.</Text>
+        <Icon name="cart-outline" size={48} color="#64748B" />
+        <Text style={styles.emptyText}>Chưa có đơn hàng nào</Text>
         <TouchableOpacity
           style={styles.shopNowButton}
           onPress={() => navigation.navigate("Trang chủ")}
         >
           <Text style={styles.shopNowButtonText}>Mua sắm ngay</Text>
+          <Icon name="chevron-right" size={20} color="#FFFFFF" />
         </TouchableOpacity>
       </View>
     );
@@ -116,6 +195,7 @@ const ListOrderScreen = ({ navigation }) => {
         refreshing={loading}
         onRefresh={fetchOrders}
         contentContainerStyle={styles.flatListContent}
+        showsVerticalScrollIndicator={false}
       />
     </View>
   );
@@ -124,101 +204,177 @@ const ListOrderScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-    backgroundColor: "#f4f4f4",
+    backgroundColor: "#F8FAFC",
   },
   flatListContent: {
-    paddingBottom: 20,
+    padding: 16,
+    paddingBottom: 24,
   },
   orderItem: {
     marginBottom: 16,
     padding: 16,
-    backgroundColor: "#ffffff",
-    borderRadius: 12,
-    elevation: 4,
-    shadowColor: "#000",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    elevation: 2,
+    shadowColor: "#64748B",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+  },
+  orderHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 12,
+  },
+  orderIdContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
   },
   orderId: {
-    fontWeight: "bold",
-    fontSize: 18,
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#1E293B",
+    letterSpacing: 0.5,
+  },
+  statusBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 100,
+    gap: 6,
+  },
+  statusText: {
+    fontSize: 12,
+    fontWeight: "600",
+  },
+  orderInfo: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 12,
+    gap: 16,
+  },
+  infoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
   },
   orderDate: {
-    color: "#777",
+    fontSize: 14,
+    color: "#64748B",
   },
-  orderTotal: {
-    fontWeight: "bold",
-    color: "#007bff",
-    fontSize: 16,
+  productCount: {
+    fontSize: 14,
+    color: "#64748B",
   },
-  orderStatus: {
-    marginTop: 5,
+  productsContainer: {
+    marginBottom: 16,
+    paddingBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#F1F5F9",
   },
-  statusText: (status) => ({
-    color:
-      status === "Completed"
-        ? "green"
-        : status === "Pending"
-          ? "orange"
-          : "red",
-    fontWeight: "bold",
-  }),
-  productHeader: {
-    marginTop: 10,
-    fontWeight: "bold",
-    fontSize: 16,
+  productRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 8,
   },
   productName: {
-    paddingLeft: 10,
-    color: "#333",
+    flex: 1,
+    fontSize: 14,
+    color: "#475569",
+  },
+  moreProductsButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 4,
+  },
+  moreProducts: {
+    fontSize: 14,
+    color: "#6366F1",
+    fontWeight: "600",
+    marginRight: 4,
+  },
+  footer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  totalContainer: {
+    gap: 4,
+  },
+  totalLabel: {
+    fontSize: 14,
+    color: "#64748B",
+  },
+  totalPrice: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#6366F1",
+  },
+  viewDetailButton: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  viewDetailText: {
+    fontSize: 14,
+    color: "#6366F1",
+    fontWeight: "600",
+    marginRight: 4,
   },
   centerContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f4f4f4",
+    backgroundColor: "#F8FAFC",
+    padding: 24,
   },
   loadingText: {
-    marginTop: 10,
-    color: "#555",
+    marginTop: 12,
+    fontSize: 14,
+    color: "#64748B",
   },
   emptyText: {
-    color: "#555",
+    fontSize: 16,
+    color: "#64748B",
+    marginTop: 12,
+    marginBottom: 12,
   },
   errorText: {
-    color: "red",
+    fontSize: 16,
+    color: "#DC2626",
+    textAlign: "center",
+    marginTop: 12,
+    marginBottom: 12,
   },
   retryButton: {
-    marginTop: 10,
-    padding: 10,
-    backgroundColor: "#ffcc00",
-    borderRadius: 5,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    backgroundColor: "#6366F1",
+    borderRadius: 100,
   },
   retryButtonText: {
-    fontWeight: "bold",
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#FFFFFF",
+    marginLeft: 8,
   },
   shopNowButton: {
-    marginTop: 10,
-    padding: 10,
-    backgroundColor: "#007bff",
-    borderRadius: 5,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    backgroundColor: "#6366F1",
+    borderRadius: 100,
   },
   shopNowButtonText: {
-    color: "#ffffff",
-    fontWeight: "bold",
-  },
-  detailButton: {
-    marginTop: 10,
-    padding: 10,
-    backgroundColor: "#007bff",
-    borderRadius: 5,
-  },
-  detailButtonText: {
-    color: "#ffffff",
-    fontWeight: "bold",
-    textAlign: "center",
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#FFFFFF",
+    marginRight: 8,
   },
 });
 

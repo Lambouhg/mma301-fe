@@ -95,11 +95,11 @@ const EditProfileScreen = ({ route, navigation }) => {
           headers: { Authorization: `Bearer ${user.token}` },
         }
       );
-      
+
       Alert.alert(
         "Thành công ✓",
         "Thông tin của bạn đã được cập nhật",
-        [{ 
+        [{
           text: "OK",
           onPress: () => navigation.navigate("Tôi", { updated: true }),
           style: "default"
@@ -146,15 +146,15 @@ const EditProfileScreen = ({ route, navigation }) => {
       )}
     </Surface>
   );
-  
+
   // Sửa lại phần renderLoadingOverlay
   const renderLoadingOverlay = () => (
     <View style={styles.loadingOverlay}>
       <Surface style={styles.loadingCard}>
-        <MaterialCommunityIcons 
-          name="loading" 
-          size={40} 
-          color="#6200ee"
+        <MaterialCommunityIcons
+          name="loading"
+          size={40}
+          color="#007AFF"
         />
         <Text style={styles.loadingText}>Đang cập nhật...</Text>
       </Surface>
@@ -162,12 +162,12 @@ const EditProfileScreen = ({ route, navigation }) => {
   );
 
   return (
-    <KeyboardAvoidingView 
+    <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
 
-      <ScrollView 
+      <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.contentContainer}
         showsVerticalScrollIndicator={false}
@@ -219,9 +219,11 @@ const EditProfileScreen = ({ route, navigation }) => {
               style={styles.cancelButton}
               contentStyle={styles.buttonContent}
               disabled={loading}
+              theme={{ colors: { primary: '#007AFF' } }} // Sets text color to #007AFF
             >
               Hủy thay đổi
             </Button>
+
           </View>
         </Animated.View>
       </ScrollView>
@@ -302,11 +304,11 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     borderRadius: 8,
     elevation: 2,
-    backgroundColor: '#6200ee',
+    backgroundColor: '#007AFF',
   },
   cancelButton: {
     borderRadius: 8,
-    borderColor: '#6200ee',
+    borderColor: '#007AFF',
   },
   loadingOverlay: {
     ...StyleSheet.absoluteFillObject,
