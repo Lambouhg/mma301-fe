@@ -9,7 +9,7 @@ import {
   Dimensions,
 } from "react-native";
 import { useAuth } from "../context/AuthContext";
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 const { width } = Dimensions.get("window");
 
@@ -55,28 +55,42 @@ const ListOrderScreen = ({ navigation }) => {
           bg: "#E7F7EE",
           text: "#1D804B",
           icon: "check-circle",
-          label: "Hoàn thành"
+          label: "Hoàn thành",
         };
       case "Pending":
         return {
           bg: "#FFF4E5",
           text: "#E07C00",
           icon: "clock-outline",
-          label: "Đang xử lý"
+          label: "Chưa xử lý",
+        };
+        case "Processing":
+        return {
+          bg: "#FFF4E5",
+          text: "#E07C00",
+          icon: "clock-outline",
+          label: "Đang xử lý",
+        };
+        case "Shipped":
+        return {
+          bg: "#E7F7EE",
+          text: "#1D804B",
+          icon: "check-circle",
+          label: "Đã giao hàng",
         };
       default:
         return {
           bg: "#FFEBEB",
           text: "#D92D20",
           icon: "close-circle",
-          label: "Đã hủy"
+          label: "Đã hủy",
         };
     }
   };
 
   const renderOrderItem = ({ item }) => {
     const statusInfo = getStatusInfo(item.status);
-    
+
     return (
       <TouchableOpacity
         style={styles.orderItem}
@@ -88,12 +102,6 @@ const ListOrderScreen = ({ navigation }) => {
           <View style={styles.orderIdContainer}>
             <Icon name="shopping" size={20} color="#1E293B" />
             <Text style={styles.orderId}>#{item.id}</Text>
-          </View>
-          <View style={[styles.statusBadge, { backgroundColor: statusInfo.bg }]}>
-            <Icon name={statusInfo.icon} size={16} color={statusInfo.text} />
-            <Text style={[styles.statusText, { color: statusInfo.text }]}>
-              {statusInfo.label}
-            </Text>
           </View>
         </View>
 
@@ -133,13 +141,21 @@ const ListOrderScreen = ({ navigation }) => {
           <View style={styles.totalContainer}>
             <Text style={styles.totalLabel}>Tổng tiền:</Text>
             <Text style={styles.totalPrice}>
-              {item.totalPrice.toLocaleString('vi-VN')}đ
+              {item.totalPrice.toLocaleString("vi-VN")}đ
             </Text>
           </View>
           <TouchableOpacity style={styles.viewDetailButton}>
-            <Text style={styles.viewDetailText}>Xem chi tiết</Text>
+            <Text style={styles.viewDetailText}></Text>
             <Icon name="chevron-right" size={16} color="#6366F1" />
           </TouchableOpacity>
+        </View>
+
+        {/* Status badge at bottom right */}
+        <View style={[styles.statusBadge, { backgroundColor: statusInfo.bg }]}>
+          <Icon name={statusInfo.icon} size={16} color={statusInfo.text} />
+          <Text style={[styles.statusText, { color: statusInfo.text }]}>
+            {statusInfo.label}
+          </Text>
         </View>
       </TouchableOpacity>
     );
@@ -159,10 +175,7 @@ const ListOrderScreen = ({ navigation }) => {
       <View style={styles.centerContainer}>
         <Icon name="alert-circle" size={48} color="#DC2626" />
         <Text style={styles.errorText}>{error}</Text>
-        <TouchableOpacity 
-          style={styles.retryButton}
-          onPress={fetchOrders}
-        >
+        <TouchableOpacity style={styles.retryButton} onPress={fetchOrders}>
           <Icon name="refresh" size={20} color="#FFFFFF" />
           <Text style={styles.retryButtonText}>Thử lại</Text>
         </TouchableOpacity>
@@ -220,6 +233,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,
     shadowRadius: 8,
+    position: "relative",
   },
   orderHeader: {
     flexDirection: "row",
@@ -244,6 +258,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 100,
+    position: "absolute",
+    bottom: 16,
+    right: 16,
     gap: 6,
   },
   statusText: {
@@ -288,20 +305,21 @@ const styles = StyleSheet.create({
   moreProductsButton: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 4,
+    gap: 4,
   },
   moreProducts: {
     fontSize: 14,
-    color: "#6366F1",
     fontWeight: "600",
-    marginRight: 4,
+    color: "#6366F1",
   },
   footer: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
+    justifyContent: "space-between",
   },
   totalContainer: {
+    flexDirection: "row",
+    alignItems: "center",
     gap: 4,
   },
   totalLabel: {
@@ -310,71 +328,69 @@ const styles = StyleSheet.create({
   },
   totalPrice: {
     fontSize: 16,
-    fontWeight: "700",
-    color: "#6366F1",
+    fontWeight: "600",
+    color: "#4CAF50",
   },
   viewDetailButton: {
     flexDirection: "row",
     alignItems: "center",
+    gap: 4,
   },
   viewDetailText: {
     fontSize: 14,
-    color: "#6366F1",
     fontWeight: "600",
-    marginRight: 4,
+    color: "#6366F1",
   },
   centerContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#F8FAFC",
-    padding: 24,
+    padding: 16,
   },
   loadingText: {
-    marginTop: 12,
-    fontSize: 14,
+    fontSize: 16,
     color: "#64748B",
+    marginTop: 12,
+  },
+  errorText: {
+    fontSize: 16,
+    color: "#DC2626",
+    marginTop: 12,
+  },
+  retryButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 16,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    backgroundColor: "#6366F1",
+    borderRadius: 8,
+    gap: 6,
+  },
+  retryButtonText: {
+    fontSize: 14,
+    color: "#FFFFFF",
+    fontWeight: "600",
   },
   emptyText: {
     fontSize: 16,
     color: "#64748B",
     marginTop: 12,
-    marginBottom: 12,
-  },
-  errorText: {
-    fontSize: 16,
-    color: "#DC2626",
-    textAlign: "center",
-    marginTop: 12,
-    marginBottom: 12,
-  },
-  retryButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    backgroundColor: "#6366F1",
-    borderRadius: 100,
-  },
-  retryButtonText: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#FFFFFF",
-    marginLeft: 8,
   },
   shopNowButton: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 12,
-    paddingHorizontal: 24,
+    marginTop: 16,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
     backgroundColor: "#6366F1",
-    borderRadius: 100,
+    borderRadius: 8,
+    gap: 6,
   },
   shopNowButtonText: {
     fontSize: 14,
-    fontWeight: "600",
     color: "#FFFFFF",
-    marginRight: 8,
+    fontWeight: "600",
   },
 });
 
