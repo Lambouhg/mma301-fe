@@ -8,9 +8,65 @@ import {
   Image,
   TouchableOpacity,
   Alert,
+  SafeAreaView,
+  ScrollView,
+  Dimensions,
 } from "react-native";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
+import { MaterialIcons } from "@expo/vector-icons";
+
+const { width } = Dimensions.get("window");
+
+const OrderStatusBar = ({ status }) => {
+  const stages = ["Pending", "Processing", "Shipped", "Completed"];
+  const currentIndex = stages.indexOf(status);
+
+  return (
+    <View style={styles.statusBarContainer}>
+      {stages.map((stage, index) => (
+        <View key={stage} style={styles.statusStageContainer}>
+          <View
+            style={[
+              styles.statusDot,
+              {
+                backgroundColor: index <= currentIndex ? "#4CAF50" : "#E0E0E0",
+              },
+            ]}
+          />
+          <Text
+            style={[
+              styles.statusStageText,
+              {
+                color: index <= currentIndex ? "#4CAF50" : "#9E9E9E",
+                fontWeight: index === currentIndex ? "bold" : "normal",
+              },
+            ]}
+          >
+            {stage}
+          </Text>
+          {index < stages.length - 1 && (
+            <View
+              style={[
+                styles.statusLine,
+                {
+                  backgroundColor: index < currentIndex ? "#4CAF50" : "#E0E0E0",
+                },
+              ]}
+            />
+          )}
+        </View>
+      ))}
+    </View>
+  );
+};
+
+const InfoCard = ({ title, children }) => (
+  <View style={styles.infoCard}>
+    <Text style={styles.cardTitle}>{title}</Text>
+    <View style={styles.cardContent}>{children}</View>
+  </View>
+);
 
 const ListOrderDetailScreen = ({ route, navigation }) => {
   const { order } = route.params;
@@ -58,8 +114,8 @@ const ListOrderDetailScreen = ({ route, navigation }) => {
   if (loading) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#007bff" />
-        <Text style={styles.loadingText}>Đang tải thông tin chi tiết đơn hàng...</Text>
+        <ActivityIndicator size="large" color="#4CAF50" />
+        <Text style={styles.loadingText}>Đang tải thông tin...</Text>
       </View>
     );
   }
@@ -67,6 +123,7 @@ const ListOrderDetailScreen = ({ route, navigation }) => {
   if (error) {
     return (
       <View style={styles.centerContainer}>
+        <MaterialIcons name="error-outline" size={48} color="#F44336" />
         <Text style={styles.errorText}>{error}</Text>
       </View>
     );
@@ -75,120 +132,232 @@ const ListOrderDetailScreen = ({ route, navigation }) => {
   if (!orderDetails) {
     return (
       <View style={styles.centerContainer}>
+        <MaterialIcons name="search-off" size={48} color="#9E9E9E" />
         <Text style={styles.emptyText}>Không tìm thấy thông tin đơn hàng.</Text>
       </View>
     );
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.sectionTitle}>Thông tin đơn hàng</Text>
-      <Text>Mã đơn hàng: {orderDetails.id}</Text>
-      <Text>Ngày đặt hàng: {orderDetails.date}</Text>
-      <Text>Tổng tiền: {orderDetails.totalPrice.toLocaleString('vi-VN')} VND</Text>
-      <Text>Phương thức thanh toán: {orderDetails.paymentMethod}</Text>
-      <Text>
-        Trạng thái đơn hàng:{" "}
-        <Text style={styles.statusText(orderDetails.status)}>{orderDetails.status}</Text>
-      </Text>
+    <SafeAreaView style={styles.container}>
+      <ScrollView>
+        <OrderStatusBar status={orderDetails.status} />
 
-      <Text style={styles.sectionTitle}>Thông tin người đặt hàng</Text>
-      {profileData ? (
-        <>
-          <Text>Tên người đặt: {profileData.username}</Text>
-          <Text>Email: {profileData.email}</Text>
-          <Text>Số điện thoại: {profileData.phoneNumber}</Text>
-          <Text>Địa chỉ: {profileData.address}</Text>
-        </>
-      ) : (
-        <Text>Đang tải thông tin người đặt hàng...</Text>
-      )}
+        <InfoCard title="Thông tin đơn hàng">
+          <View style={styles.infoRow}>
+            <MaterialIcons name="receipt" size={20} color="#757575" />
+            <Text style={styles.infoLabel}>Mã đơn hàng:</Text>
+            <Text style={styles.infoValue}>{orderDetails.id}</Text>
+          </View>
+          <View style={styles.infoRow}>
+            <MaterialIcons name="date-range" size={20} color="#757575" />
+            <Text style={styles.infoLabel}>Ngày đặt:</Text>
+            <Text style={styles.infoValue}>{orderDetails.date}</Text>
+          </View>
+          <View style={styles.infoRow}>
+            <MaterialIcons name="payment" size={20} color="#757575" />
+            <Text style={styles.infoLabel}>Thanh toán:</Text>
+            <Text style={styles.infoValue}>{orderDetails.paymentMethod}</Text>
+          </View>
+          <View style={styles.infoRow}>
+            <MaterialIcons name="attach-money" size={20} color="#757575" />
+            <Text style={styles.infoLabel}>Tổng tiền:</Text>
+            <Text style={styles.infoValue}>
+              {orderDetails.totalPrice.toLocaleString('vi-VN')} VND
+            </Text>
+          </View>
+        </InfoCard>
 
-      <Text style={styles.sectionTitle}>Danh sách sản phẩm</Text>
-<FlatList
-  data={orderDetails.products}
-  keyExtractor={(item) => item.id.toString()}
-  renderItem={({ item }) => (
-    <TouchableOpacity
-      onPress={() => navigation.navigate("Chi tiết sản phẩm", { product: item })}
-      style={styles.productItem}
-    >
-      <View style={styles.productRow}>
-        <Image source={{ uri: item.imageUrl }} style={styles.productImage} />
-        <View style={styles.productDetails}>
-          <Text style={styles.productName}>{item.name}</Text>
-          <Text>Giá: {item.price.toLocaleString('vi-VN')} VND</Text>
-          <Text>Số lượng: {item.quantity}</Text>
-          <Text>Thương hiệu: {item.brand}</Text>
-          <Text>Danh mục: {item.category}</Text>
-        </View>
-      </View>
-    </TouchableOpacity>
-  )}
-/>
-    </View>
+        <InfoCard title="Thông tin người đặt">
+          {profileData ? (
+            <>
+              <View style={styles.infoRow}>
+                <MaterialIcons name="person" size={20} color="#757575" />
+                <Text style={styles.infoLabel}>Họ tên:</Text>
+                <Text style={styles.infoValue}>{profileData.username}</Text>
+              </View>
+              <View style={styles.infoRow}>
+                <MaterialIcons name="email" size={20} color="#757575" />
+                <Text style={styles.infoLabel}>Email:</Text>
+                <Text style={styles.infoValue}>{profileData.email}</Text>
+              </View>
+              <View style={styles.infoRow}>
+                <MaterialIcons name="phone" size={20} color="#757575" />
+                <Text style={styles.infoLabel}>SĐT:</Text>
+                <Text style={styles.infoValue}>{profileData.phoneNumber}</Text>
+              </View>
+              <View style={styles.infoRow}>
+                <MaterialIcons name="location-on" size={20} color="#757575" />
+                <Text style={styles.infoLabel}>Địa chỉ:</Text>
+                <Text style={styles.infoValue}>{profileData.address}</Text>
+              </View>
+            </>
+          ) : (
+            <ActivityIndicator size="small" color="#4CAF50" />
+          )}
+        </InfoCard>
+
+        <InfoCard title="Danh sách sản phẩm">
+          <FlatList
+            data={orderDetails.products}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                onPress={() => navigation.navigate("Chi tiết sản phẩm", { product: item })}
+                style={styles.productCard}
+              >
+                <Image source={{ uri: item.imageUrl }} style={styles.productImage} />
+                <View style={styles.productInfo}>
+                  <Text style={styles.productName}>{item.name}</Text>
+                  <Text style={styles.productPrice}>
+                    {item.price.toLocaleString('vi-VN')} VND
+                  </Text>
+                  <View style={styles.productMetaContainer}>
+                    <View style={styles.productMeta}>
+                      <MaterialIcons name="shopping-cart" size={16} color="#757575" />
+                      <Text style={styles.productMetaText}>SL: {item.quantity}</Text>
+                    </View>
+                    <View style={styles.productMeta}>
+                      <MaterialIcons name="category" size={16} color="#757575" />
+                      <Text style={styles.productMetaText}>{item.category}</Text>
+                    </View>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            )}
+            scrollEnabled={false}
+          />
+        </InfoCard>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-    backgroundColor: "#f4f4f4",
+    backgroundColor: "#F5F5F5",
   },
-  sectionTitle: {
-    fontWeight: "bold",
-    fontSize: 18,
-    marginBottom: 10,
-    marginTop: 20,
+  statusBarContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    backgroundColor: "white",
+    marginVertical: 10,
   },
-  productItem: {
-    marginBottom: 16,
-    padding: 16,
-    backgroundColor: "#ffffff",
-    borderRadius: 12,
-    elevation: 4,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 2,
-  },
-  productRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  productImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 8,
-    marginRight: 10,
-  },
-  productDetails: {
+  statusStageContainer: {
+    alignItems: "center",
     flex: 1,
   },
-  productName: {
-    fontWeight: "bold",
-    fontSize: 16,
+  statusDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
   },
-  statusText: (status) => ({
-    color: status === "Completed" ? "green" : status === "Pending" ? "orange" : "red",
+  statusLine: {
+    position: "absolute",
+    top: 6,
+    left: "60%",
+    right: 0,
+    height: 2,
+  },
+  statusStageText: {
+    fontSize: 12,
+    marginTop: 4,
+  },
+  infoCard: {
+    backgroundColor: "white",
+    borderRadius: 12,
+    marginHorizontal: 10,
+    marginBottom: 10,
+    padding: 15,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  cardTitle: {
+    fontSize: 18,
     fontWeight: "bold",
-  }),
+    marginBottom: 15,
+    color: "#212121",
+  },
+  cardContent: {
+    gap: 12,
+  },
+  infoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  infoLabel: {
+    flex: 1,
+    color: "#757575",
+  },
+  infoValue: {
+    flex: 2,
+    color: "#212121",
+  },
+  productCard: {
+    flexDirection: "row",
+    backgroundColor: "#FAFAFA",
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 10,
+  },
+  productImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 8,
+  },
+  productInfo: {
+    flex: 1,
+    marginLeft: 12,
+  },
+  productName: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#212121",
+    marginBottom: 4,
+  },
+  productPrice: {
+    fontSize: 15,
+    color: "#4CAF50",
+    fontWeight: "500",
+    marginBottom: 8,
+  },
+  productMetaContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  productMeta: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  productMetaText: {
+    fontSize: 13,
+    color: "#757575",
+  },
   centerContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f4f4f4",
+    backgroundColor: "#F5F5F5",
   },
   loadingText: {
     marginTop: 10,
-    color: "#555",
+    color: "#757575",
   },
   errorText: {
-    color: "red",
+    color: "#F44336",
+    marginTop: 8,
   },
   emptyText: {
-    color: "#555",
+    color: "#757575",
+    marginTop: 8,
   },
 });
 
