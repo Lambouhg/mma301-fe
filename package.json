@@ -22,6 +22,7 @@
     "expo-blur": "~13.0.2",
     "expo-linear-gradient": "^13.0.2",
     "expo-status-bar": "~1.12.1",
+    "lottie-react-native": "^7.1.0",
     "lucide-react-native": "^0.454.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
