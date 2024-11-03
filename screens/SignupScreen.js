@@ -1,103 +1,153 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Alert, Image } from "react-native";
+import { View, StyleSheet, Alert, Image, ImageBackground, ActivityIndicator } from "react-native";
 import { TextInput, Button, Text, Appbar, Card } from "react-native-paper";
 import { useAuth } from "../context/AuthContext";
 
 const SignupScreen = ({ navigation }) => {
-  const { signup, verifyCode } = useAuth();
+  const { signup } = useAuth();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSignup = async () => {
+    if (!username || !email || !password) {
+      Alert.alert("Lỗi", "Vui lòng điền đầy đủ thông tin!");
+      return;
+    }
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      Alert.alert("Lỗi", "Vui lòng nhập địa chỉ email hợp lệ!");
+      return;
+    }
+    if (password.length < 6) {
+      Alert.alert("Lỗi", "Mật khẩu phải có ít nhất 6 ký tự!");
+      return;
+    }
+
+    setLoading(true);
     try {
-      console.log("Signup Data:", { username, email, password });
-      const response = await signup(username, email, password);
-      Alert.alert(
-        "Đăng ký thành công!",
-        "Hãy kiểm tra email của bạn để nhận mã xác thực tài khoản."
-      );
+      await signup(username, email, password);
+      Alert.alert("Đăng ký thành công!", "Hãy kiểm tra email của bạn để nhận mã xác thực tài khoản.");
       navigation.navigate("Xác thực tài khoản", { email, mode: "register" });
     } catch (error) {
       Alert.alert("Lỗi đăng ký!", error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.innerContainer}>
-        <Image source={require("../assets/logo.png")} style={styles.logo} />
-        <Card style={styles.card}>
-          <TextInput
-            label="Tên người dùng"
-            value={username}
-            onChangeText={setUsername}
-            mode="outlined"
-            style={styles.input}
-          />
-          <TextInput
-            label="Email"
-            value={email}
-            onChangeText={setEmail}
-            mode="outlined"
-            style={styles.input}
-          />
-          <TextInput
-            label="Mật khẩu"
-            secureTextEntry
-            value={password}
-            onChangeText={setPassword}
-            mode="outlined"
-            style={styles.input}
-          />
-        </Card>
+    <ImageBackground
+      source={{ uri: 'https://img.lovepik.com/background/20211029/medium/lovepik-canvas-shoe-wallpaper-background-image_400288297.jpg' }}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <View style={styles.container}>
+        <View style={styles.innerContainer}>
+          <Card style={styles.card}>
+            <TextInput
+              label="Tên người dùng"
+              value={username}
+              onChangeText={setUsername}
+              mode="outlined"
+              style={styles.input}
+              left={<TextInput.Icon icon="account" />}
+            />
+            <TextInput
+              label="Email"
+              value={email}
+              onChangeText={setEmail}
+              mode="outlined"
+              style={styles.input}
+              left={<TextInput.Icon icon="email" />}
+            />
+            <TextInput
+              label="Mật khẩu"
+              secureTextEntry
+              value={password}
+              onChangeText={setPassword}
+              mode="outlined"
+              style={styles.input}
+              left={<TextInput.Icon icon="lock" />}
+            />
+          </Card>
 
-        <Button mode="contained" onPress={handleSignup} style={styles.button}>
-          Đăng ký
-        </Button>
-        <Text
-          style={styles.footerText}
-          onPress={() => navigation.navigate("Đăng nhập")}
-        >
-          Bạn đã có tài khoản? Đăng nhập
-        </Text>
+          <Button
+            mode="contained"
+            onPress={handleSignup}
+            style={styles.button}
+            labelStyle={styles.buttonText}
+            disabled={loading}
+          >
+            {loading ? <ActivityIndicator color="#fff" /> : "Đăng ký"}
+          </Button>
+          
+          <Text
+            style={styles.footerText}
+            onPress={() => navigation.navigate("Đăng nhập")}
+          >
+            Bạn đã có tài khoản? Đăng nhập
+          </Text>
+        </View>
       </View>
-    </View>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  background: {
     flex: 1,
-    justifyContent: "flex-start",
-    padding: 20,
-    backgroundColor: "#f8f8f8",
+    justifyContent: "center",
   },
-  logo: {
-    width: 100,
-    height: 100,
-    alignSelf: "center",
-    marginBottom: 10,
+  container: {
+    padding: 20,
+    marginHorizontal: 16,
+    backgroundColor: "rgba(255, 255, 255, 0.85)",
+    borderRadius: 10,
+  },
+  appbar: {
+    backgroundColor: "transparent",
+    elevation: 0,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: "bold",
+    textAlign: "center",
+    color: "#6200ea",
+  },
+  innerContainer: {
+    alignItems: "center",
+    justifyContent: "center",
   },
   card: {
     padding: 8,
     borderRadius: 8,
     elevation: 5,
-  },
-  innerContainer: {
-    flex: 1,
-    justifyContent: "center",
+    width: "100%",
   },
   input: {
     marginBottom: 8,
   },
   button: {
-    marginTop: 10,
+    marginTop: 16,
+    borderRadius: 25,
+    paddingVertical: 8,
+    backgroundColor: "#6200ea",
+    shadowColor: "#6200ea",
+    shadowOpacity: 0.5,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    width: "100%",
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: "bold",
   },
   footerText: {
-    marginTop: 15,
+    marginTop: 16,
     textAlign: "center",
-    color: "#007BFF",
+    fontWeight: "600",
+    color: "#6200ea",
   },
 });
 

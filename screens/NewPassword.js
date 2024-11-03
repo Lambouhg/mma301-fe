@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Alert, Image, Text } from "react-native";
-import { TextInput, Button, useTheme } from "react-native-paper";
-import { Ionicons } from "@expo/vector-icons";
+import { View, StyleSheet, Alert, ImageBackground } from "react-native";
+import { TextInput, Button, Text, Card } from "react-native-paper";
 import { useAuth } from "../context/AuthContext";
 
 const NewPasswordScreen = ({ route, navigation }) => {
@@ -29,61 +28,71 @@ const NewPasswordScreen = ({ route, navigation }) => {
   };
 
   return (
+    <ImageBackground
+      source={{ uri: 'https://img.lovepik.com/background/20211029/medium/lovepik-canvas-shoe-wallpaper-background-image_400288297.jpg' }}
+      style={styles.background}
+      resizeMode="cover"
+    >
     <View style={styles.container}>
-      <Image source={require("../assets/logo.png")} style={styles.logo} />
-      <Text style={styles.title}>Đặt lại mật khẩu</Text>
-      <Text style={styles.subtitle}>Vui lòng nhập mật khẩu mới của bạn</Text>
-      
-      <View style={styles.inputContainer}>
-        <Ionicons name="lock-closed-outline" size={24} color={theme.colors.primary} />
-        <TextInput
-          label="Mật khẩu mới"
-          secureTextEntry
-          value={newPassword}
-          onChangeText={setNewPassword}
-          mode="outlined"
-          style={styles.input}
-          left={<TextInput.Icon name="lock" />}
-        />
-      </View>
-      
-      <View style={styles.inputContainer}>
-        <Ionicons name="lock-closed-outline" size={24} color={theme.colors.primary} />
-        <TextInput
-          label="Xác nhận mật khẩu"
-          secureTextEntry
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          mode="outlined"
-          style={styles.input}
-          left={<TextInput.Icon name="lock" />}
-        />
-      </View>
-
-      <Button
-        mode="contained"
-        onPress={handleResetPassword}
-        style={styles.button}
-        contentStyle={styles.buttonContent}
-      >
+        <View style={styles.innerContainer}>
+          <Card style={styles.card}>
+          <Text style={{ fontWeight: 'bold', fontSize: 20 }}>Đặt lại mật khẩu</Text>
+      <TextInput
+        label="Mật khẩu mới"
+        secureTextEntry
+        value={newPassword}
+        onChangeText={setNewPassword}
+        mode="outlined"
+        style={styles.input}
+      />
+      <TextInput
+        label="Xác nhận mật khẩu"
+        secureTextEntry
+        value={confirmPassword}
+        onChangeText={setConfirmPassword}
+        mode="outlined"
+        style={styles.input}
+      />
+      <Button mode="contained" onPress={handleResetPassword} style={styles.button}>
         Đặt lại mật khẩu
       </Button>
+      </Card>
+      </View>
     </View>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  background: {
     flex: 1,
     justifyContent: "center",
-    padding: 20,
-    backgroundColor: "#f7f8fc",
   },
-  logo: {
-    width: 100,
-    height: 100,
-    alignSelf: "center",
-    marginBottom: 20,
+  container: {
+    padding: 20,
+    marginHorizontal: 16,
+    backgroundColor: "rgba(255, 255, 255, 0.85)",
+    borderRadius: 10,
+  },
+  input: {
+    marginBottom: 5,
+  },
+  card: {
+    padding: 8,
+    borderRadius: 8,
+    elevation: 5,
+    width: "100%",
+  },
+  button: {
+    marginTop: 16,
+    borderRadius: 25,
+    paddingVertical: 8,
+    backgroundColor: "#6200ea",
+    shadowColor: "#6200ea",
+    shadowOpacity: 0.5,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    width: "100%",
   },
   title: {
     fontSize: 24,
