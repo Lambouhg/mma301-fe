@@ -5,6 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
+
 const EditPasswordScreen = ({ navigation }) => {
   const { user } = useAuth();
   const [currentPassword, setCurrentPassword] = useState("");
@@ -191,7 +192,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     paddingVertical: 8,
     borderRadius: 10,
-    backgroundColor: "#6200ee",
+    backgroundColor: "#007AFF",
   },
 });
 
