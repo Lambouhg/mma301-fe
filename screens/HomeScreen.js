@@ -113,15 +113,11 @@ const HomeScreen = ({ navigation }) => {
     outputRange: [0, 200],
   });
 
-  // Debug component để hiển thị trạng thái hiện tại
-  const DebugInfo = () => (
-    <View style={styles.debugInfo}>
-      <Text>Selected Brand: {selectedBrand}</Text>
-      <Text>Selected Category: {selectedCategory}</Text>
-      <Text>Filter Count: {filterCount}</Text>
-      <Text>Show Filters: {showFilters ? 'true' : 'false'}</Text>
-    </View>
-  );
+  // Thêm animation cho margin top của product list
+  const listMarginTop = filterAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [10, 220], // Điều chỉnh giá trị này để có khoảng cách phù hợp
+  });
 
   return (
     <View style={styles.container}>
@@ -158,103 +154,103 @@ const HomeScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      {/* Wrap the Animated.View in a conditional render */}
-      {showFilters && (
-        <Animated.View style={[styles.filterContainer, { maxHeight: filterHeight }]}>
-          <View style={styles.filterSection}>
-            <Text style={styles.filterTitle}>Thương hiệu</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              <TouchableOpacity
-                style={[
-                  styles.filterChip,
-                  !selectedBrand && styles.filterChipSelected,
-                ]}
-                onPress={() => handleBrandSelect("")}
-              >
-                <Text style={[
-                  styles.filterChipText,
-                  !selectedBrand && styles.filterChipTextSelected,
-                ]}>Tất cả</Text>
-              </TouchableOpacity>
-              {brands.map((brand) => (
+      <View style={styles.contentContainer}>
+        {showFilters && (
+          <Animated.View style={[styles.filterContainer, { maxHeight: filterHeight }]}>
+            <View style={styles.filterSection}>
+              <Text style={styles.filterTitle}>Thương hiệu</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <TouchableOpacity
-                  key={brand}
                   style={[
                     styles.filterChip,
-                    selectedBrand === brand && styles.filterChipSelected,
+                    !selectedBrand && styles.filterChipSelected,
                   ]}
-                  onPress={() => handleBrandSelect(brand)}
+                  onPress={() => handleBrandSelect("")}
                 >
                   <Text style={[
                     styles.filterChipText,
-                    selectedBrand === brand && styles.filterChipTextSelected,
-                  ]}>{brand}</Text>
+                    !selectedBrand && styles.filterChipTextSelected,
+                  ]}>Tất cả</Text>
                 </TouchableOpacity>
-              ))}
-            </ScrollView>
-          </View>
+                {brands.map((brand) => (
+                  <TouchableOpacity
+                    key={brand}
+                    style={[
+                      styles.filterChip,
+                      selectedBrand === brand && styles.filterChipSelected,
+                    ]}
+                    onPress={() => handleBrandSelect(brand)}
+                  >
+                    <Text style={[
+                      styles.filterChipText,
+                      selectedBrand === brand && styles.filterChipTextSelected,
+                    ]}>{brand}</Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </View>
 
-          <View style={styles.filterSection}>
-            <Text style={styles.filterTitle}>Danh mục</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              <TouchableOpacity
-                style={[
-                  styles.filterChip,
-                  !selectedCategory && styles.filterChipSelected,
-                ]}
-                onPress={() => handleCategorySelect("")}
-              >
-                <Text style={[
-                  styles.filterChipText,
-                  !selectedCategory && styles.filterChipTextSelected,
-                ]}>Tất cả</Text>
-              </TouchableOpacity>
-              {categories.map((category) => (
+            <View style={styles.filterSection}>
+              <Text style={styles.filterTitle}>Danh mục</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <TouchableOpacity
-                  key={category}
                   style={[
                     styles.filterChip,
-                    selectedCategory === category && styles.filterChipSelected,
+                    !selectedCategory && styles.filterChipSelected,
                   ]}
-                  onPress={() => handleCategorySelect(category)}
+                  onPress={() => handleCategorySelect("")}
                 >
                   <Text style={[
                     styles.filterChipText,
-                    selectedCategory === category && styles.filterChipTextSelected,
-                  ]}>{category}</Text>
+                    !selectedCategory && styles.filterChipTextSelected,
+                  ]}>Tất cả</Text>
                 </TouchableOpacity>
-              ))}
-            </ScrollView>
-          </View>
+                {categories.map((category) => (
+                  <TouchableOpacity
+                    key={category}
+                    style={[
+                      styles.filterChip,
+                      selectedCategory === category && styles.filterChipSelected,
+                    ]}
+                    onPress={() => handleCategorySelect(category)}
+                  >
+                    <Text style={[
+                      styles.filterChipText,
+                      selectedCategory === category && styles.filterChipTextSelected,
+                    ]}>{category}</Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </View>
 
-          {filterCount > 0 && (
-            <TouchableOpacity
-              style={styles.clearFiltersButton}
-              onPress={clearFilters}
-            >
-              <Text style={styles.clearFiltersText}>Xóa bộ lọc</Text>
-            </TouchableOpacity>
-          )}
-        </Animated.View>
-      )}
+            {filterCount > 0 && (
+              <TouchableOpacity
+                style={styles.clearFiltersButton}
+                onPress={clearFilters}
+              >
+                <Text style={styles.clearFiltersText}>Xóa bộ lọc</Text>
+              </TouchableOpacity>
+            )}
+          </Animated.View>
+        )}
 
-      {/* Uncomment this to show debug info */}
-      {/* <DebugInfo /> */}
-
-      {filteredProducts.length === 0 ? (
-        <View style={styles.emptyContainer}>
-          <Text style={styles.emptyText}>Không tìm thấy sản phẩm.</Text>
-        </View>
-      ) : (
-        <FlatList
-          data={filteredProducts}
-          renderItem={renderProductCard}
-          keyExtractor={(item) => item._id}
-          numColumns={2}
-          columnWrapperStyle={styles.row}
-          contentContainerStyle={styles.listContainer}
-        />
-      )}
+        {filteredProducts.length === 0 ? (
+          <Animated.View style={[styles.emptyContainer, { marginTop: listMarginTop }]}>
+            <Text style={styles.emptyText}>Không tìm thấy sản phẩm.</Text>
+          </Animated.View>
+        ) : (
+          <Animated.View style={{ marginTop: listMarginTop }}>
+            <FlatList
+              data={filteredProducts}
+              renderItem={renderProductCard}
+              keyExtractor={(item) => item._id}
+              numColumns={2}
+              columnWrapperStyle={styles.row}
+              contentContainerStyle={styles.listContainer}
+            />
+          </Animated.View>
+        )}
+      </View>
 
       <ChatIcon onPress={handleChatPress} />
     </View>
@@ -268,6 +264,10 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingBottom: 30,
     paddingTop: 60,
+  },
+  contentContainer: {
+    flex: 1,
+    position: 'relative',
   },
   header: {
     marginBottom: 20,
@@ -328,10 +328,21 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   filterContainer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
     backgroundColor: "#f9f9f9",
     borderRadius: 10,
     padding: 10,
-    overflow: "hidden",
+    zIndex: 1,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   filterSection: {
     marginBottom: 15,
@@ -379,7 +390,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   listContainer: {
-    marginTop: 10,
     paddingTop: 10,
     borderRadius: 10,
     paddingBottom: 20,
@@ -392,11 +402,6 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 18,
     color: "#999",
-  },
-  debugInfo: {
-    padding: 10,
-    backgroundColor: '#f0f0f0',
-    margin: 10,
   },
 });
 
