@@ -55,7 +55,9 @@ const PaymentScreen = ({ route, navigation }) => {
     if (paymentMethod === "momo") {
       Alert.alert(
         "Thanh toán MoMo",
-        `Đang chuyển hướng đến ứng dụng MoMo để thanh toán ${orderDetails.totalPrice.toLocaleString('vi-VN')} VND cho đơn hàng #${orderDetails._id}`,
+        `Đang chuyển hướng đến ứng dụng MoMo để thanh toán ${orderDetails.totalPrice.toLocaleString(
+          "vi-VN"
+        )} VND cho đơn hàng #${orderDetails._id}`,
         [
           {
             text: "Tiếp tục",
@@ -63,10 +65,10 @@ const PaymentScreen = ({ route, navigation }) => {
             onPress: async () => {
               try {
                 const response = await axios.post(
-                  "https://apply-momo-to-order.onrender.com/payment",
+                  "https://mma301.onrender.com/payments/payment",
                   {
                     amount: orderDetails.totalPrice.toString(),
-                    orderInfo: `Thanh toán đơn hàng #${orderDetails._id}`,
+                    orderId: `Thanh toán đơn hàng #${orderDetails._id}`,
                   }
                 );
 
@@ -83,7 +85,9 @@ const PaymentScreen = ({ route, navigation }) => {
                           onPress: () =>
                             navigation.reset({
                               index: 0,
-                              routes: [{ name: "Main", params: { screen: "Home" } }],
+                              routes: [
+                                { name: "Main", params: { screen: "Home" } },
+                              ],
                             }),
                         },
                       ]
@@ -107,7 +111,11 @@ const PaymentScreen = ({ route, navigation }) => {
     } else if (paymentMethod === "cod") {
       Alert.alert(
         "Thanh toán khi nhận hàng",
-        `Đơn hàng #${orderDetails._id} sẽ được thanh toán ${orderDetails.totalPrice.toLocaleString('vi-VN')} VND khi giao hàng.`,
+        `Đơn hàng #${
+          orderDetails._id
+        } sẽ được thanh toán ${orderDetails.totalPrice.toLocaleString(
+          "vi-VN"
+        )} VND khi giao hàng.`,
         [
           {
             text: "Xác nhận",
@@ -152,7 +160,6 @@ const PaymentScreen = ({ route, navigation }) => {
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor="#f8f9fa" />
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-
         {userInfo && (
           <View style={styles.card}>
             <View style={styles.cardHeader}>
@@ -177,13 +184,15 @@ const PaymentScreen = ({ route, navigation }) => {
             <Text style={styles.orderId}>Đơn hàng #{orderDetails._id}</Text>
             <View style={styles.orderDetail}>
               <Text style={styles.orderLabel}>Số lượng sản phẩm</Text>
-              <Text style={styles.orderValue}>{orderDetails.products.length}</Text>
+              <Text style={styles.orderValue}>
+                {orderDetails.products.length}
+              </Text>
             </View>
             <View style={styles.divider} />
             <View style={styles.orderDetail}>
               <Text style={styles.totalLabel}>Tổng tiền</Text>
               <Text style={styles.totalValue}>
-                {orderDetails.totalPrice.toLocaleString('vi-VN')} VND
+                {orderDetails.totalPrice.toLocaleString("vi-VN")} VND
               </Text>
             </View>
           </View>
@@ -239,7 +248,10 @@ const PaymentScreen = ({ route, navigation }) => {
         </View>
 
         <TouchableOpacity
-          style={[styles.confirmButton, !paymentMethod && styles.disabledButton]}
+          style={[
+            styles.confirmButton,
+            !paymentMethod && styles.disabledButton,
+          ]}
           onPress={handlePayment}
           disabled={!paymentMethod}
         >
