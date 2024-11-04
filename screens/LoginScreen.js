@@ -33,6 +33,7 @@ const LoginScreen = ({ navigation }) => {
     >
       <View style={styles.container}>
         <View style={styles.innerContainer}>
+        <Text style={styles.subtitle}>Chào mừng bạn trở lại!!</Text>
           <Card style={styles.card}>
             <TextInput
               label="Email"
@@ -92,10 +93,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   container: {
-    padding: 20,
+    padding: 15,
     marginHorizontal: 16,
     backgroundColor: "rgba(255, 255, 255, 0.85)",
     borderRadius: 10,
+  },
+  subtitle: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    color: 'black',
+    marginBottom: 5,
   },
   title: {
     fontSize: 28,
