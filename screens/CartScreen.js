@@ -215,7 +215,7 @@ const CartScreen = ({ navigation }) => {
         });
 
         // Optionally handle the successful creation of the order
-        Alert.alert("Thông báo", "Đơn hàng đã được tạo thành công.");r
+        Alert.alert("Thông báo", "Đơn hàng đã được tạo thành công.");
         return response.data._id;
     } catch (error) {
         console.error("Lỗi khi tạo đơn hàng:", error);
