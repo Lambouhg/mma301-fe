@@ -31,7 +31,7 @@ const PaymentScreen = ({ route, navigation }) => {
     try {
       setLoading(true);
       const response = await axios.get(
-        "https://mma301.onrender.com/users/profile",
+        "https://project-sdn-be.onrender.com/users/profile",
         {
           headers: { Authorization: `Bearer ${user.token}` },
         }
@@ -65,7 +65,7 @@ const PaymentScreen = ({ route, navigation }) => {
             onPress: async () => {
               try {
                 const response = await axios.post(
-                  "https://mma301.onrender.com/payments/payment",
+                  "https://project-sdn-be.onrender.com/payments/payment",
                   {
                     amount: orderDetails.totalPrice.toString(),
                     orderId: `Thanh toán đơn hàng #${orderDetails._id}`,

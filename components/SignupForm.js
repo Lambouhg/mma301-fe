@@ -10,7 +10,7 @@ const SignupForm = ({ navigation }) => {
 
   const handleSignup = async () => {
     try {
-      await axios.post("https://mma301.onrender.com/users/signup", {
+      await axios.post("https://project-sdn-be.onrender.com/users/signup", {
         username,
         email,
         password,

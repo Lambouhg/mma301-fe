@@ -1,10 +1,23 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Alert, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
-import { TextInput, Button, Text, ActivityIndicator, IconButton, Surface } from "react-native-paper";
+import {
+  View,
+  StyleSheet,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from "react-native";
+import {
+  TextInput,
+  Button,
+  Text,
+  ActivityIndicator,
+  IconButton,
+  Surface,
+} from "react-native-paper";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-
 
 const EditPasswordScreen = ({ navigation }) => {
   const { user } = useAuth();
@@ -23,7 +36,9 @@ const EditPasswordScreen = ({ navigation }) => {
 
   const handleChangePassword = async () => {
     if (!currentPassword || !newPassword || !confirmPassword) {
-      Alert.alert("Thông báo", "Vui lòng nhập đầy đủ thông tin.", [{ text: "Đã hiểu" }]);
+      Alert.alert("Thông báo", "Vui lòng nhập đầy đủ thông tin.", [
+        { text: "Đã hiểu" },
+      ]);
       return;
     }
 
@@ -46,7 +61,7 @@ const EditPasswordScreen = ({ navigation }) => {
     try {
       setLoading(true);
       const response = await axios.put(
-        "https://mma301.onrender.com/users/editPass",
+        "https://project-sdn-be.onrender.com/users/editPass",
         { password: currentPassword, newPassword },
         {
           headers: { Authorization: `Bearer ${user.token}` },
@@ -57,9 +72,11 @@ const EditPasswordScreen = ({ navigation }) => {
       ]);
     } catch (error) {
       console.error("Error updating password:", error);
-      Alert.alert("Thông báo", "Cập nhật mật khẩu không thành công, vui lòng thử lại.", [
-        { text: "Đã hiểu" },
-      ]);
+      Alert.alert(
+        "Thông báo",
+        "Cập nhật mật khẩu không thành công, vui lòng thử lại.",
+        [{ text: "Đã hiểu" }]
+      );
     } finally {
       setLoading(false);
     }
@@ -83,8 +100,8 @@ const EditPasswordScreen = ({ navigation }) => {
         mode="flat"
         theme={{
           colors: {
-            primary: '#6200ee',
-            underlineColor: 'transparent',
+            primary: "#6200ee",
+            underlineColor: "transparent",
           },
         }}
         left={<TextInput.Icon icon={icon} />}

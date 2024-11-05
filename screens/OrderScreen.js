@@ -16,7 +16,7 @@ import {
 import axios from "axios";
 import { useFocusEffect } from "@react-navigation/native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { LinearGradient } from 'expo-linear-gradient';
+import { LinearGradient } from "expo-linear-gradient";
 
 const OrderScreen = ({ route, navigation }) => {
   const { orderId } = route.params;
@@ -43,16 +43,16 @@ const OrderScreen = ({ route, navigation }) => {
 
   const fetchProductDetails = async (productIds) => {
     const productDetailsPromises = productIds.map((productId) =>
-      axios.get(`https://mma301.onrender.com/products/${productId}`)
+      axios.get(`https://project-sdn-be.onrender.com/products/${productId}`)
     );
     const productDetailsResponses = await Promise.all(productDetailsPromises);
     return productDetailsResponses.map((response) => response.data);
   };
 
   const fetchOrderDetails = async () => {
-    try {
+    try {w
       const response = await axios.get(
-        `https://mma301.onrender.com/orders/${orderId}`
+        `https://project-sdn-be.onrender.com/orders/${orderId}`
       );
 
       if (!response.data.products || response.data.products.length === 0) {
@@ -86,7 +86,9 @@ const OrderScreen = ({ route, navigation }) => {
 
   const deleteOrder = async () => {
     try {
-      await axios.delete(`https://mma301.onrender.com/orders/${orderId}`);
+      await axios.delete(
+        `https://project-sdn-be.onrender.com/orders/${orderId}`
+      );
       navigation.navigate("Giỏ hàng");
       Alert.alert("Thông báo", "Đơn hàng đã bị hủy.");
     } catch (error) {
@@ -142,7 +144,7 @@ const OrderScreen = ({ route, navigation }) => {
               <Text style={styles.productQuantity}>{item.quantity}</Text>
             </View>
             <Text style={styles.productPrice}>
-              {totalProductPrice.toLocaleString('vi-VN')} 0VND
+              {totalProductPrice.toLocaleString("vi-VN")} 0VND
             </Text>
           </View>
         </View>
@@ -206,7 +208,7 @@ const OrderScreen = ({ route, navigation }) => {
           <View style={styles.totalContainer}>
             <Text style={styles.totalLabel}>Tổng thanh toán</Text>
             <Text style={styles.totalPrice}>
-              {orderDetails.totalPrice.toLocaleString('vi-VN')}₫
+              {orderDetails.totalPrice.toLocaleString("vi-VN")}₫
             </Text>
           </View>
           <TouchableOpacity
@@ -221,7 +223,12 @@ const OrderScreen = ({ route, navigation }) => {
               <ActivityIndicator color="#fff" size="small" />
             ) : (
               <>
-                <MaterialIcons name="payment" size={24} color="#fff" style={styles.paymentIcon} />
+                <MaterialIcons
+                  name="payment"
+                  size={24}
+                  color="#fff"
+                  style={styles.paymentIcon}
+                />
                 <Text style={styles.paymentButtonText}>Thanh toán ngay</Text>
               </>
             )}

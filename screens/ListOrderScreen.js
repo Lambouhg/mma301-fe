@@ -29,7 +29,7 @@ const ListOrderScreen = ({ navigation }) => {
     try {
       setLoading(true);
       const response = await fetch(
-        `https://mma301.onrender.com/orders/user/${user.id}`
+        `https://project-sdn-be.onrender.com/orders/user/${user.id}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -64,14 +64,14 @@ const ListOrderScreen = ({ navigation }) => {
           icon: "clock-outline",
           label: "Chưa xử lý",
         };
-        case "Processing":
+      case "Processing":
         return {
           bg: "#FFF4E5",
           text: "#E07C00",
           icon: "clock-outline",
           label: "Đang xử lý",
         };
-        case "Shipped":
+      case "Shipped":
         return {
           bg: "#E7F7EE",
           text: "#1D804B",

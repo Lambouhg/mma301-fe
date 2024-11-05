@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Alert, ScrollView, ImageBackground, Pressable } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Alert,
+  ScrollView,
+  ImageBackground,
+  Pressable,
+} from "react-native";
 import { Text, ActivityIndicator, Button, Avatar } from "react-native-paper";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
@@ -19,42 +26,41 @@ const ProfileScreen = ({ navigation, route }) => {
     try {
       setLoading(true);
       const response = await axios.get(
-        "https://mma301.onrender.com/users/profile",
+        "https://project-sdn-be.onrender.com/users/profile",
         {
           headers: { Authorization: `Bearer ${user.token}` },
         }
       );
       setProfileData(response.data);
     } catch (error) {
-      Alert.alert("Error", "Failed to fetch profile data");
+      Alert.alert("Thành ông", "Đăng xuất thành công");
     } finally {
       setLoading(false);
     }
   };
 
   const handleLogout = () => {
-    Alert.alert(
-      "Đăng xuất",
-      "Bạn có chắc chắn muốn đăng xuất?",
-      [
-        {
-          text: "Hủy",
-          style: "cancel"
+    Alert.alert("Đăng xuất", "Bạn có chắc chắn muốn đăng xuất?", [
+      {
+        text: "Hủy",
+        style: "cancel",
+      },
+      {
+        text: "Đăng xuất",
+        onPress: () => {
+          logout();
+          navigation.navigate("Đăng nhập");
         },
-        {
-          text: "Đăng xuất",
-          onPress: () => {
-            logout();
-            navigation.navigate("Đăng nhập");
-          },
-          style: 'destructive'
-        }
-      ]
-    );
+        style: "destructive",
+      },
+    ]);
   };
 
   const ProfileItem = ({ icon, label, value }) => (
-    <Animated.View entering={FadeInDown.delay(300).springify()} style={styles.profileItem}>
+    <Animated.View
+      entering={FadeInDown.delay(300).springify()}
+      style={styles.profileItem}
+    >
       <View style={styles.iconContainer}>
         <Icon name={icon} size={24} color="#007AFF" />
       </View>
@@ -84,11 +90,16 @@ const ProfileScreen = ({ navigation, route }) => {
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <ImageBackground
-        source={{ uri: 'https://images.unsplash.com/photo-1557683316-973673baf926' }}
+        source={{
+          uri: "https://images.unsplash.com/photo-1557683316-973673baf926",
+        }}
         style={styles.headerBackground}
       >
         <View style={styles.headerOverlay} />
-        <Animated.View entering={FadeInUp.delay(200)} style={styles.headerContent}>
+        <Animated.View
+          entering={FadeInUp.delay(200)}
+          style={styles.headerContent}
+        >
           <Avatar.Text
             size={80}
             label={profileData.username.substring(0, 2).toUpperCase()}
@@ -105,21 +116,22 @@ const ProfileScreen = ({ navigation, route }) => {
           label="Số điện thoại"
           value={profileData.phoneNumber}
         />
-        <ProfileItem
-          icon="home"
-          label="Địa chỉ"
-          value={profileData.address}
-        />
+        <ProfileItem icon="home" label="Địa chỉ" value={profileData.address} />
         <ProfileItem
           icon="calendar-today"
           label="Ngày tạo"
           value={new Date(profileData.createdAt).toLocaleDateString()}
         />
 
-        <Animated.View entering={FadeInDown.delay(400)} style={styles.buttonGroup}>
+        <Animated.View
+          entering={FadeInDown.delay(400)}
+          style={styles.buttonGroup}
+        >
           <Pressable
             style={styles.editButton}
-            onPress={() => navigation.navigate("Chỉnh sửa hồ sơ", { profileData })}
+            onPress={() =>
+              navigation.navigate("Chỉnh sửa hồ sơ", { profileData })
+            }
           >
             <Icon name="edit" size={24} color="#007AFF" />
             <Text style={styles.buttonText}>Chỉnh sửa hồ sơ</Text>
@@ -133,12 +145,11 @@ const ProfileScreen = ({ navigation, route }) => {
             <Text style={styles.buttonText}>Đổi mật khẩu</Text>
           </Pressable>
 
-          <Pressable
-            style={styles.logoutButton}
-            onPress={handleLogout}
-          >
+          <Pressable style={styles.logoutButton} onPress={handleLogout}>
             <Icon name="logout" size={24} color="#FF3B30" />
-            <Text style={[styles.buttonText, { color: '#FF3B30' }]}>Đăng xuất</Text>
+            <Text style={[styles.buttonText, { color: "#FF3B30" }]}>
+              Đăng xuất
+            </Text>
           </Pressable>
         </Animated.View>
       </View>
@@ -149,38 +160,38 @@ const ProfileScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: "#f8f9fa",
   },
   headerBackground: {
     height: 200,
-    width: '100%',
+    width: "100%",
   },
   headerOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.4)',
+    backgroundColor: "rgba(0,0,0,0.4)",
   },
   headerContent: {
     height: 200,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   avatar: {
-    backgroundColor: '#007AFF',
+    backgroundColor: "#007AFF",
     marginBottom: 10,
   },
   username: {
     fontSize: 24,
-    fontWeight: '600',
-    color: 'white',
+    fontWeight: "600",
+    color: "white",
     marginBottom: 4,
   },
   email: {
     fontSize: 16,
-    color: 'rgba(255,255,255,0.9)',
+    color: "rgba(255,255,255,0.9)",
   },
   contentContainer: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: "#f8f9fa",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     marginTop: -20,
@@ -188,12 +199,12 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   profileItem: {
-    flexDirection: 'row',
-    backgroundColor: 'white',
+    flexDirection: "row",
+    backgroundColor: "white",
     padding: 16,
     borderRadius: 12,
     marginBottom: 12,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -206,9 +217,9 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: 'rgba(0,122,255,0.1)',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "rgba(0,122,255,0.1)",
+    alignItems: "center",
+    justifyContent: "center",
     marginRight: 12,
   },
   profileItemContent: {
@@ -216,26 +227,26 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    color: '#6c757d',
+    color: "#6c757d",
     marginBottom: 4,
   },
   value: {
     fontSize: 16,
-    color: '#212529',
-    fontWeight: '500',
+    color: "#212529",
+    fontWeight: "500",
   },
   buttonGroup: {
     marginTop: 20,
     marginBottom: 30,
   },
   editButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'white',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "white",
     padding: 16,
     borderRadius: 12,
     marginBottom: 12,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -245,13 +256,13 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   passwordButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'white',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "white",
     padding: 16,
     borderRadius: 12,
     marginBottom: 12,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -261,12 +272,12 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   logoutButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'white',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "white",
     padding: 16,
     borderRadius: 12,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -278,17 +289,17 @@ const styles = StyleSheet.create({
   buttonText: {
     marginLeft: 12,
     fontSize: 16,
-    color: '#007AFF',
-    fontWeight: '500',
+    color: "#007AFF",
+    fontWeight: "500",
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   errorText: {
     fontSize: 16,
-    color: '#FF3B30',
+    color: "#FF3B30",
   },
 });
 

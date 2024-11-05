@@ -84,7 +84,9 @@ const ListOrderDetailScreen = ({ route, navigation }) => {
   const fetchOrderDetails = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`https://mma301.onrender.com/orders/${order.id}`);
+      const response = await fetch(
+        `https://project-sdn-be.onrender.com/orders/${order.id}`
+      );
       if (!response.ok) throw new Error("Network response was not ok");
       const data = await response.json();
       setOrderDetails(data);
@@ -100,9 +102,12 @@ const ListOrderDetailScreen = ({ route, navigation }) => {
   const fetchProfile = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("https://mma301.onrender.com/users/profile", {
-        headers: { Authorization: `Bearer ${user.token}` },
-      });
+      const response = await axios.get(
+        "https://project-sdn-be.onrender.com/users/profile",
+        {
+          headers: { Authorization: `Bearer ${user.token}` },
+        }
+      );
       setProfileData(response.data);
     } catch (error) {
       Alert.alert("Error", "Failed to fetch profile data");
@@ -163,7 +168,7 @@ const ListOrderDetailScreen = ({ route, navigation }) => {
             <MaterialIcons name="attach-money" size={20} color="#757575" />
             <Text style={styles.infoLabel}>Tổng tiền:</Text>
             <Text style={styles.infoValue}>
-              {orderDetails.totalPrice.toLocaleString('vi-VN')} VND
+              {orderDetails.totalPrice.toLocaleString("vi-VN")} VND
             </Text>
           </View>
         </InfoCard>
@@ -203,23 +208,40 @@ const ListOrderDetailScreen = ({ route, navigation }) => {
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
               <TouchableOpacity
-                onPress={() => navigation.navigate("Chi tiết sản phẩm", { product: item })}
+                onPress={() =>
+                  navigation.navigate("Chi tiết sản phẩm", { product: item })
+                }
                 style={styles.productCard}
               >
-                <Image source={{ uri: item.imageUrl }} style={styles.productImage} />
+                <Image
+                  source={{ uri: item.imageUrl }}
+                  style={styles.productImage}
+                />
                 <View style={styles.productInfo}>
                   <Text style={styles.productName}>{item.name}</Text>
                   <Text style={styles.productPrice}>
-                    {item.price.toLocaleString('vi-VN')} VND
+                    {item.price.toLocaleString("vi-VN")} VND
                   </Text>
                   <View style={styles.productMetaContainer}>
                     <View style={styles.productMeta}>
-                      <MaterialIcons name="shopping-cart" size={16} color="#757575" />
-                      <Text style={styles.productMetaText}>SL: {item.quantity}</Text>
+                      <MaterialIcons
+                        name="shopping-cart"
+                        size={16}
+                        color="#757575"
+                      />
+                      <Text style={styles.productMetaText}>
+                        SL: {item.quantity}
+                      </Text>
                     </View>
                     <View style={styles.productMeta}>
-                      <MaterialIcons name="category" size={16} color="#757575" />
-                      <Text style={styles.productMetaText}>{item.category}</Text>
+                      <MaterialIcons
+                        name="category"
+                        size={16}
+                        color="#757575"
+                      />
+                      <Text style={styles.productMetaText}>
+                        {item.category}
+                      </Text>
                     </View>
                   </View>
                 </View>

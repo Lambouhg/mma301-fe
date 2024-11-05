@@ -9,7 +9,7 @@ const VerifyAccountScreen = ({ route, navigation }) => {
   const [code, setCode] = useState("");
 
   const handleVerify = async () => {
-    console.log("Mode:", mode); // Kiểm tra giá trị của mode
+    console.log("Mode:", mode);
     try {
       const response = await verifyCode(email, code);
       if (response.success) {
@@ -41,7 +41,9 @@ const VerifyAccountScreen = ({ route, navigation }) => {
       <View style={styles.container}>
         <View style={styles.innerContainer}>
           <Card style={styles.card}>
-          <Text style={{ fontWeight: 'bold', fontSize: 20 }}>Xác thực tài khoản</Text>
+            <Text style={{ fontWeight: "bold", fontSize: 20 }}>
+              Xác thực tài khoản
+            </Text>
             <TextInput
               label="Nhập mã để xác thực tài khoản"
               value={code}
@@ -49,9 +51,13 @@ const VerifyAccountScreen = ({ route, navigation }) => {
               mode="outlined"
               style={styles.input}
             />
-            <Button mode="contained" onPress={handleVerify} style={styles.button}>
-            Xác thực
-          </Button>
+            <Button
+              mode="contained"
+              onPress={handleVerify}
+              style={styles.button}
+            >
+              Xác thực
+            </Button>
           </Card>
         </View>
       </View>

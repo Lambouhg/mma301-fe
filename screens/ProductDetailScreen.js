@@ -35,7 +35,7 @@ const ProductDetailScreen = ({ route, navigation }) => {
       return;
     }
     try {
-      await axios.post(`https://mma301.onrender.com/cart/${user.id}`, {
+      await axios.post(`https://project-sdn-be.onrender.com/cart/${user.id}`, {
         productId: product._id,
         quantity,
         size: selectedSize,
@@ -45,7 +45,10 @@ const ProductDetailScreen = ({ route, navigation }) => {
       setQuantity(1);
     } catch (error) {
       console.error(error);
-      Alert.alert("Error", "Unable to add product to the cart. Please try again later.");
+      Alert.alert(
+        "Error",
+        "Unable to add product to the cart. Please try again later."
+      );
     }
   };
 
@@ -53,7 +56,10 @@ const ProductDetailScreen = ({ route, navigation }) => {
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.headerButton}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.headerButton}
+          >
             <AntDesign name="left" size={24} color="#333" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.headerButton}>
@@ -77,14 +83,28 @@ const ProductDetailScreen = ({ route, navigation }) => {
           {product.sizes?.length > 0 && (
             <>
               <Text style={styles.sectionTitle}>Select Size</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.sizesContainer}>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={styles.sizesContainer}
+              >
                 {product.sizes.map((size) => (
                   <TouchableOpacity
                     key={size}
-                    style={[styles.sizeButton, selectedSize === size && styles.selectedSize]}
+                    style={[
+                      styles.sizeButton,
+                      selectedSize === size && styles.selectedSize,
+                    ]}
                     onPress={() => setSelectedSize(size)}
                   >
-                    <Text style={[styles.sizeText, selectedSize === size && styles.selectedSizeText]}>{size}</Text>
+                    <Text
+                      style={[
+                        styles.sizeText,
+                        selectedSize === size && styles.selectedSizeText,
+                      ]}
+                    >
+                      {size}
+                    </Text>
                   </TouchableOpacity>
                 ))}
               </ScrollView>
@@ -93,14 +113,28 @@ const ProductDetailScreen = ({ route, navigation }) => {
           {productColors.length > 0 && (
             <>
               <Text style={styles.sectionTitle}>Select Color</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.colorsContainer}>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={styles.colorsContainer}
+              >
                 {productColors.map((color) => (
                   <TouchableOpacity
                     key={color}
-                    style={[styles.colorButton, selectedColor === color && styles.selectedColor]}
+                    style={[
+                      styles.colorButton,
+                      selectedColor === color && styles.selectedColor,
+                    ]}
                     onPress={() => setSelectedColor(color)}
                   >
-                    <Text style={[styles.colorText, selectedColor === color && styles.selectedColorText]}>{color}</Text>
+                    <Text
+                      style={[
+                        styles.colorText,
+                        selectedColor === color && styles.selectedColorText,
+                      ]}
+                    >
+                      {color}
+                    </Text>
                   </TouchableOpacity>
                 ))}
               </ScrollView>
@@ -109,7 +143,11 @@ const ProductDetailScreen = ({ route, navigation }) => {
           <Text style={styles.sectionTitle}>Product Details</Text>
           <View style={styles.detailsGrid}>
             {product.material && (
-              <DetailItem icon="skin" label="Material" value={product.material} />
+              <DetailItem
+                icon="skin"
+                label="Material"
+                value={product.material}
+              />
             )}
             {product.gender && (
               <DetailItem icon="user" label="Gender" value={product.gender} />

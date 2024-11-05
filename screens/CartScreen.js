@@ -28,7 +28,7 @@ const CartScreen = ({ navigation }) => {
 
     try {
       const response = await axios.get(
-        `https://mma301.onrender.com/cart/${user.id}`
+        `https://project-sdn-be.onrender.com/cart/${user.id}`
       );
       setCartItems(response.data.products || []);
     } catch (error) {
@@ -87,7 +87,7 @@ const CartScreen = ({ navigation }) => {
       // Send request to update quantity on server
       try {
         await axios.put(
-          `https://mma301.onrender.com/cart/${user.id}/${itemId}/update`,
+          `https://project-sdn-be.onrender.com/cart/${user.id}/${itemId}/update`,
           {
             quantity: newQuantity,
           }
@@ -116,7 +116,7 @@ const CartScreen = ({ navigation }) => {
       // Send request to update quantity on server
       try {
         await axios.put(
-          `https://mma301.onrender.com/cart/${user.id}/${itemId}/update`,
+          `https://project-sdn-be.onrender.com/cart/${user.id}/${itemId}/update`,
           {
             quantity: newQuantity,
           }
@@ -202,15 +202,18 @@ const CartScreen = ({ navigation }) => {
     }
 
     try {
-      const response = await axios.post("https://mma301.onrender.com/orders", {
-        userId: user.id,
-        products: selectedCartItems.map((item) => ({
-          productId: item.productId._id,
-          quantity: item.quantity,
-        })),
-        totalPrice: calculateTotalPrice(selectedCartItems),
-        paymentMethod: "Credit Card",
-      });
+      const response = await axios.post(
+        "https://project-sdn-be.onrender.com/orders",
+        {
+          userId: user.id,
+          products: selectedCartItems.map((item) => ({
+            productId: item.productId._id,
+            quantity: item.quantity,
+          })),
+          totalPrice: calculateTotalPrice(selectedCartItems),
+          paymentMethod: "Credit Card",
+        }
+      );
       return response.data._id;
     } catch (error) {
       console.error("Lỗi khi tạo đơn hàng:", error);
@@ -253,7 +256,9 @@ const CartScreen = ({ navigation }) => {
     try {
       await Promise.all(
         Array.from(selectedItems).map((itemId) =>
-          axios.delete(`https://mma301.onrender.com/cart/${user.id}/${itemId}`)
+          axios.delete(
+            `https://project-sdn-be.onrender.com/cart/${user.id}/${itemId}`
+          )
         )
       );
 
@@ -310,31 +315,31 @@ const CartScreen = ({ navigation }) => {
             contentContainerStyle={styles.listContainer}
           />
 
-<View style={styles.checkoutContainer}>
-  <View style={styles.totalPriceContainer}>
-    <Text style={styles.totalPriceText} numberOfLines={1}>
-      Tổng: {totalSelectedPrice.toLocaleString("vi-VN")} VND
-    </Text>
-  </View>
-  
-  <View style={styles.buttonGroup}>
-    <TouchableOpacity
-      style={styles.removeButton}
-      onPress={removeSelectedItems}
-    >
-      <MaterialIcons name="delete" size={18} color="#FFFFFF" />
-      <Text style={styles.removeButtonText}>Xóa</Text>
-    </TouchableOpacity>
-    
-    <TouchableOpacity
-      style={styles.checkoutButton}
-      onPress={handleCheckout}
-    >
-      <MaterialIcons name="shopping-cart" size={18} color="#FFFFFF" />
-      <Text style={styles.checkoutButtonText}>Mua</Text>
-    </TouchableOpacity>
-  </View>
-</View>
+          <View style={styles.checkoutContainer}>
+            <View style={styles.totalPriceContainer}>
+              <Text style={styles.totalPriceText} numberOfLines={1}>
+                Tổng: {totalSelectedPrice.toLocaleString("vi-VN")} VND
+              </Text>
+            </View>
+
+            <View style={styles.buttonGroup}>
+              <TouchableOpacity
+                style={styles.removeButton}
+                onPress={removeSelectedItems}
+              >
+                <MaterialIcons name="delete" size={18} color="#FFFFFF" />
+                <Text style={styles.removeButtonText}>Xóa</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.checkoutButton}
+                onPress={handleCheckout}
+              >
+                <MaterialIcons name="shopping-cart" size={18} color="#FFFFFF" />
+                <Text style={styles.checkoutButtonText}>Mua</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         </>
       )}
     </View>
@@ -435,71 +440,71 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 
-checkoutContainer: {
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  backgroundColor: "#FFFFFF",
-  padding: 12,
-  paddingHorizontal: 16,
-  borderTopLeftRadius: 25,
-  borderTopRightRadius: 25,
-  shadowColor: "#000",
-  shadowOffset: { width: 0, height: -3 },
-  shadowOpacity: 0.1,
-  shadowRadius: 5,
-  elevation: 5,
-  paddingBottom: 70,
-},
+  checkoutContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: "#FFFFFF",
+    padding: 12,
+    paddingHorizontal: 16,
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 5,
+    paddingBottom: 70,
+  },
 
-totalPriceContainer: {
-  flex: 1, // Cho phép container giá tiền co giãn
-  marginRight: 10,
-},
+  totalPriceContainer: {
+    flex: 1, // Cho phép container giá tiền co giãn
+    marginRight: 10,
+  },
 
-totalPriceText: {
-  fontSize: 14,
-  fontWeight: "bold",
-  color: "#0C0F14",
-},
+  totalPriceText: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "#0C0F14",
+  },
 
-buttonGroup: {
-  flexDirection: 'row',
-  alignItems: 'center',
-},
+  buttonGroup: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
 
-removeButton: {
-  backgroundColor: "#FF6347",
-  paddingVertical: 10,
-  paddingHorizontal: 20,
-  borderRadius: 20,
-  flexDirection: 'row',
-  alignItems: 'center',
-  marginRight: 8,
-},
+  removeButton: {
+    backgroundColor: "#FF6347",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    marginRight: 8,
+  },
 
-removeButtonText: {
-  color: "#FFFFFF",
-  fontSize: 14,
-  fontWeight: "bold",
-  marginLeft: 4,
-},
+  removeButtonText: {
+    color: "#FFFFFF",
+    fontSize: 14,
+    fontWeight: "bold",
+    marginLeft: 4,
+  },
 
-checkoutButton: {
-  backgroundColor: "#007BFF", 
-  paddingVertical: 10,
-  paddingHorizontal: 20,
-  borderRadius: 20,
-  flexDirection: 'row',
-  alignItems: 'center',
-},
+  checkoutButton: {
+    backgroundColor: "#007BFF",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+    flexDirection: "row",
+    alignItems: "center",
+  },
 
-checkoutButtonText: {
-  color: "#FFFFFF", 
-  fontSize: 14,
-  fontWeight: "bold",
-  marginLeft: 4,
-},
+  checkoutButtonText: {
+    color: "#FFFFFF",
+    fontSize: 14,
+    fontWeight: "bold",
+    marginLeft: 4,
+  },
 });
 
 export default CartScreen;

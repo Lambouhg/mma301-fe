@@ -29,7 +29,7 @@ const HomeScreen = ({ navigation }) => {
     const fetchProducts = async () => {
       try {
         const response = await axios.get(
-          "https://mma301.onrender.com/products"
+          "https://project-sdn-be.onrender.com/products"
         );
         setProducts(response.data);
       } catch (error) {
@@ -48,18 +48,24 @@ const HomeScreen = ({ navigation }) => {
     setFilterCount(count);
 
     // Log để debug
-    console.log('Selected Brand:', selectedBrand);
-    console.log('Selected Category:', selectedCategory);
-    console.log('Filter Count:', count);
+    console.log("Selected Brand:", selectedBrand);
+    console.log("Selected Category:", selectedCategory);
+    console.log("Filter Count:", count);
   }, [selectedBrand, selectedCategory]);
 
   const brands = ["Nike", "Adidas", "Puma", "Reebok", "Under Armour"];
-  const categories = ["Giày Chạy Bộ", "Giày Thể Thao", "Giày Bóng Rổ", "Giày Thời Trang", "Giày Sneaker"];
+  const categories = [
+    "Giày Chạy Bộ",
+    "Giày Thể Thao",
+    "Giày Bóng Rổ",
+    "Giày Thời Trang",
+    "Giày Sneaker",
+  ];
 
   const toggleFilters = () => {
     const newShowFilters = !showFilters;
     setShowFilters(newShowFilters);
-    
+
     Animated.timing(filterAnimation, {
       toValue: newShowFilters ? 1 : 0,
       duration: 300,
@@ -68,12 +74,12 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const handleBrandSelect = (brand) => {
-    console.log('Selecting brand:', brand); // Debug log
+    console.log("Selecting brand:", brand); // Debug log
     setSelectedBrand(brand);
   };
 
   const handleCategorySelect = (category) => {
-    console.log('Selecting category:', category); // Debug log
+    console.log("Selecting category:", category); // Debug log
     setSelectedCategory(category);
   };
 
@@ -105,7 +111,7 @@ const HomeScreen = ({ navigation }) => {
   const clearFilters = () => {
     setSelectedBrand("");
     setSelectedCategory("");
-    console.log('Clearing filters'); // Debug log
+    console.log("Clearing filters"); // Debug log
   };
 
   const filterHeight = filterAnimation.interpolate({
@@ -140,11 +146,8 @@ const HomeScreen = ({ navigation }) => {
             onChangeText={setSearchQuery}
           />
         </View>
-        
-        <TouchableOpacity 
-          style={styles.filterButton}
-          onPress={toggleFilters}
-        >
+
+        <TouchableOpacity style={styles.filterButton} onPress={toggleFilters}>
           <Icon name="filter" size={20} color="#333" />
           {filterCount > 0 && (
             <View style={styles.filterBadge}>
@@ -156,7 +159,9 @@ const HomeScreen = ({ navigation }) => {
 
       <View style={styles.contentContainer}>
         {showFilters && (
-          <Animated.View style={[styles.filterContainer, { maxHeight: filterHeight }]}>
+          <Animated.View
+            style={[styles.filterContainer, { maxHeight: filterHeight }]}
+          >
             <View style={styles.filterSection}>
               <Text style={styles.filterTitle}>Thương hiệu</Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -167,10 +172,14 @@ const HomeScreen = ({ navigation }) => {
                   ]}
                   onPress={() => handleBrandSelect("")}
                 >
-                  <Text style={[
-                    styles.filterChipText,
-                    !selectedBrand && styles.filterChipTextSelected,
-                  ]}>Tất cả</Text>
+                  <Text
+                    style={[
+                      styles.filterChipText,
+                      !selectedBrand && styles.filterChipTextSelected,
+                    ]}
+                  >
+                    Tất cả
+                  </Text>
                 </TouchableOpacity>
                 {brands.map((brand) => (
                   <TouchableOpacity
@@ -181,10 +190,15 @@ const HomeScreen = ({ navigation }) => {
                     ]}
                     onPress={() => handleBrandSelect(brand)}
                   >
-                    <Text style={[
-                      styles.filterChipText,
-                      selectedBrand === brand && styles.filterChipTextSelected,
-                    ]}>{brand}</Text>
+                    <Text
+                      style={[
+                        styles.filterChipText,
+                        selectedBrand === brand &&
+                          styles.filterChipTextSelected,
+                      ]}
+                    >
+                      {brand}
+                    </Text>
                   </TouchableOpacity>
                 ))}
               </ScrollView>
@@ -200,24 +214,34 @@ const HomeScreen = ({ navigation }) => {
                   ]}
                   onPress={() => handleCategorySelect("")}
                 >
-                  <Text style={[
-                    styles.filterChipText,
-                    !selectedCategory && styles.filterChipTextSelected,
-                  ]}>Tất cả</Text>
+                  <Text
+                    style={[
+                      styles.filterChipText,
+                      !selectedCategory && styles.filterChipTextSelected,
+                    ]}
+                  >
+                    Tất cả
+                  </Text>
                 </TouchableOpacity>
                 {categories.map((category) => (
                   <TouchableOpacity
                     key={category}
                     style={[
                       styles.filterChip,
-                      selectedCategory === category && styles.filterChipSelected,
+                      selectedCategory === category &&
+                        styles.filterChipSelected,
                     ]}
                     onPress={() => handleCategorySelect(category)}
                   >
-                    <Text style={[
-                      styles.filterChipText,
-                      selectedCategory === category && styles.filterChipTextSelected,
-                    ]}>{category}</Text>
+                    <Text
+                      style={[
+                        styles.filterChipText,
+                        selectedCategory === category &&
+                          styles.filterChipTextSelected,
+                      ]}
+                    >
+                      {category}
+                    </Text>
                   </TouchableOpacity>
                 ))}
               </ScrollView>
@@ -235,7 +259,9 @@ const HomeScreen = ({ navigation }) => {
         )}
 
         {filteredProducts.length === 0 ? (
-          <Animated.View style={[styles.emptyContainer, { marginTop: listMarginTop }]}>
+          <Animated.View
+            style={[styles.emptyContainer, { marginTop: listMarginTop }]}
+          >
             <Text style={styles.emptyText}>Không tìm thấy sản phẩm.</Text>
           </Animated.View>
         ) : (
@@ -267,7 +293,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-    position: 'relative',
+    position: "relative",
   },
   header: {
     marginBottom: 20,
@@ -328,7 +354,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   filterContainer: {
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     right: 0,
     backgroundColor: "#f9f9f9",

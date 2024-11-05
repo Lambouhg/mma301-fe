@@ -9,13 +9,20 @@ const ForgetPassword = ({ navigation }) => {
   const handleSendCode = async () => {
     try {
       const response = await axios.post(
-        "https://mma301.onrender.com/users/forgot-password",
+        "https://project-sdn-be.onrender.com/users/forgot-password",
         { email } // Gửi email đến backend
       );
       Alert.alert("Thành công", response.data.message);
-      navigation.navigate("Xác thực tài khoản", { email, mode: "forgotPassword" }); // Điều hướng tới màn xác thực
+      navigation.navigate("Xác thực tài khoản", {
+        email,
+        mode: "forgotPassword",
+      }); // Điều hướng tới màn xác thực
     } catch (error) {
-      Alert.alert("Lỗi", error.response?.data?.message || "Có lỗi xảy ra khi gửi mã xác thực. Vui lòng thử lại.");
+      Alert.alert(
+        "Lỗi",
+        error.response?.data?.message ||
+          "Có lỗi xảy ra khi gửi mã xác thực. Vui lòng thử lại."
+      );
     }
   };
 
@@ -27,23 +34,29 @@ const ForgetPassword = ({ navigation }) => {
       style={styles.background}
       resizeMode="cover"
     >
-    <View style={styles.container}>
-    <View style={styles.innerContainer}>
-    <Card style={styles.card}>
-    <Text style={{ fontWeight: 'bold', fontSize: 20 }}>Nhập email để lấy mã xác thực</Text>
-      <TextInput
-        label="Nhập email của bạn"
-        value={email}
-        onChangeText={setEmail}
-        mode="outlined"
-        style={styles.input}
-      />
-      <Button mode="contained" onPress={handleSendCode} style={styles.button}>
-        Gửi mã xác thực
-      </Button>
-      </Card>
-    </View>
-    </View>
+      <View style={styles.container}>
+        <View style={styles.innerContainer}>
+          <Card style={styles.card}>
+            <Text style={{ fontWeight: "bold", fontSize: 20 }}>
+              Nhập email để lấy mã xác thực
+            </Text>
+            <TextInput
+              label="Nhập email của bạn"
+              value={email}
+              onChangeText={setEmail}
+              mode="outlined"
+              style={styles.input}
+            />
+            <Button
+              mode="contained"
+              onPress={handleSendCode}
+              style={styles.button}
+            >
+              Gửi mã xác thực
+            </Button>
+          </Card>
+        </View>
+      </View>
     </ImageBackground>
   );
 };

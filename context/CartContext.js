@@ -14,7 +14,7 @@ export const CartProvider = ({ children }) => {
 
     try {
       const response = await axios.get(
-        `https://mma301.onrender.com/cart/${user.id}`
+        `https://project-sdn-be.onrender.com/cart/${user.id}`
       );
       setCartItems(response.data.products || []); // Cập nhật giỏ hàng
     } catch (error) {
@@ -34,7 +34,7 @@ export const CartProvider = ({ children }) => {
 
     try {
       const response = await axios.post(
-        `https://mma301.onrender.com/cart/${user.id}`,
+        `https://project-sdn-be.onrender.com/cart/${user.id}`,
         dataToSend
       );
       fetchCartItems(); // Cập nhật giỏ hàng sau khi thêm sản phẩm

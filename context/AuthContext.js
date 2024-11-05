@@ -11,7 +11,7 @@ export const AuthProvider = ({ children }) => {
   const signup = async (username, email, password, phoneNumber, address) => {
     try {
       const response = await axios.post(
-        "https://mma301.onrender.com/users/signup",
+        "https://project-sdn-be.onrender.com/users/signup",
         { username, email, password, phoneNumber, address }
       );
       return response.data;
@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }) => {
   const verifyCode = async (email, code) => {
     try {
       const response = await axios.post(
-        "https://mma301.onrender.com/users/verify",
+        "https://project-sdn-be.onrender.com/users/verify",
         { email, code }
       );
       return { success: response.data };
@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
   const resetPassword = async (email, newPassword) => {
     try {
       const response = await axios.post(
-        "https://mma301.onrender.com/users/reset-password",
+        "https://project-sdn-be.onrender.com/users/reset-password",
         { email, newPassword }
       );
       return { success: response.data };
@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       const response = await axios.post(
-        "https://mma301.onrender.com/users/login",
+        "https://project-sdn-be.onrender.com/users/login",
         { email, password }
       );
       // Lưu trữ tên người dùng
@@ -67,7 +67,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, signup, login, logout, verifyCode, resetPassword }}>
+    <AuthContext.Provider
+      value={{ user, signup, login, logout, verifyCode, resetPassword }}
+    >
       {children}
     </AuthContext.Provider>
   );

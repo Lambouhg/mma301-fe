@@ -1,6 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Alert, ScrollView, KeyboardAvoidingView, Platform, Animated } from "react-native";
-import { TextInput, Button, Text, Surface, Avatar, useTheme, IconButton } from "react-native-paper";
+import {
+  View,
+  StyleSheet,
+  Alert,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  Animated,
+} from "react-native";
+import {
+  TextInput,
+  Button,
+  Text,
+  Surface,
+  Avatar,
+  useTheme,
+  IconButton,
+} from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
@@ -39,7 +55,7 @@ const EditProfileScreen = ({ route, navigation }) => {
     let newErrors = { ...errors };
 
     switch (field) {
-      case 'username':
+      case "username":
         if (!value || value.trim().length === 0) {
           newErrors.username = "Tên người dùng không được để trống";
         } else if (value.trim().length < 3) {
@@ -48,7 +64,7 @@ const EditProfileScreen = ({ route, navigation }) => {
           delete newErrors.username;
         }
         break;
-      case 'phoneNumber':
+      case "phoneNumber":
         const phoneRegex = /^(03|05|07|08|09)[0-9]{8}$/;
         if (!value || value.trim().length === 0) {
           newErrors.phoneNumber = "Số điện thoại không được để trống";
@@ -58,7 +74,7 @@ const EditProfileScreen = ({ route, navigation }) => {
           delete newErrors.phoneNumber;
         }
         break;
-      case 'address':
+      case "address":
         if (!value || value.trim().length === 0) {
           newErrors.address = "Địa chỉ không được để trống";
         } else if (value.trim().length < 10) {
@@ -73,38 +89,34 @@ const EditProfileScreen = ({ route, navigation }) => {
   };
 
   const handleUpdate = async () => {
-    Object.keys(editedData).forEach(field => {
+    Object.keys(editedData).forEach((field) => {
       validateField(field, editedData[field]);
     });
 
     if (Object.keys(errors).length > 0) {
-      Alert.alert(
-        "Thông tin chưa hợp lệ",
-        Object.values(errors).join("\n"),
-        [{ text: "Đã hiểu", style: "default" }]
-      );
+      Alert.alert("Thông tin chưa hợp lệ", Object.values(errors).join("\n"), [
+        { text: "Đã hiểu", style: "default" },
+      ]);
       return;
     }
 
     try {
       setLoading(true);
       const response = await axios.put(
-        "https://mma301.onrender.com/users/profile",
+        "https://project-sdn-be.onrender.com/users/profile",
         editedData,
         {
           headers: { Authorization: `Bearer ${user.token}` },
         }
       );
 
-      Alert.alert(
-        "Thành công ✓",
-        "Thông tin của bạn đã được cập nhật",
-        [{
+      Alert.alert("Thành công ✓", "Thông tin của bạn đã được cập nhật", [
+        {
           text: "OK",
           onPress: () => navigation.navigate("Tôi", { updated: true }),
-          style: "default"
-        }]
-      );
+          style: "default",
+        },
+      ]);
     } catch (error) {
       Alert.alert(
         "Không thể cập nhật",
@@ -116,13 +128,7 @@ const EditProfileScreen = ({ route, navigation }) => {
     }
   };
 
-  const renderInputField = (
-    label,
-    value,
-    field,
-    icon,
-    options = {}
-  ) => (
+  const renderInputField = (label, value, field, icon, options = {}) => (
     <Surface style={styles.inputContainer} elevation={1}>
       <TextInput
         label={label}
@@ -139,11 +145,7 @@ const EditProfileScreen = ({ route, navigation }) => {
         multiline={options.multiline}
         keyboardType={options.keyboardType}
       />
-      {errors[field] && (
-        <Text style={styles.errorText}>
-          {errors[field]}
-        </Text>
-      )}
+      {errors[field] && <Text style={styles.errorText}>{errors[field]}</Text>}
     </Surface>
   );
 
@@ -151,11 +153,7 @@ const EditProfileScreen = ({ route, navigation }) => {
   const renderLoadingOverlay = () => (
     <View style={styles.loadingOverlay}>
       <Surface style={styles.loadingCard}>
-        <MaterialCommunityIcons
-          name="loading"
-          size={40}
-          color="#007AFF"
-        />
+        <MaterialCommunityIcons name="loading" size={40} color="#007AFF" />
         <Text style={styles.loadingText}>Đang cập nhật...</Text>
       </Surface>
     </View>
@@ -166,7 +164,6 @@ const EditProfileScreen = ({ route, navigation }) => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
-
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.contentContainer}
@@ -177,28 +174,51 @@ const EditProfileScreen = ({ route, navigation }) => {
             <Surface style={styles.avatarSurface} elevation={4}>
               <Avatar.Image
                 size={120}
-                source={{ uri: `https://ui-avatars.com/api/?name=${editedData.username}&background=random&size=200` }}
+                source={{
+                  uri: `https://ui-avatars.com/api/?name=${editedData.username}&background=random&size=200`,
+                }}
               />
               <IconButton
                 icon="camera"
                 size={24}
                 style={styles.editAvatarButton}
                 color="#fff"
-                onPress={() => Alert.alert(
-                  "Thông báo",
-                  "Tính năng đang phát triển",
-                  [{ text: "Đã hiểu" }]
-                )}
+                onPress={() =>
+                  Alert.alert("Thông báo", "Tính năng đang phát triển", [
+                    { text: "Đã hiểu" },
+                  ])
+                }
               />
             </Surface>
-            <Text style={styles.avatarHint}>Nhấn vào biểu tượng máy ảnh để thay đổi ảnh đại diện</Text>
+            <Text style={styles.avatarHint}>
+              Nhấn vào biểu tượng máy ảnh để thay đổi ảnh đại diện
+            </Text>
           </View>
 
           <Surface style={styles.formContainer} elevation={2}>
-            {renderInputField("Tên người dùng", editedData.username, "username", "account")}
-            {renderInputField("Email", editedData.email, "email", "email", { disabled: true })}
-            {renderInputField("Số điện thoại", editedData.phoneNumber, "phoneNumber", "phone", { keyboardType: "phone-pad" })}
-            {renderInputField("Địa chỉ", editedData.address, "address", "map-marker", { multiline: true })}
+            {renderInputField(
+              "Tên người dùng",
+              editedData.username,
+              "username",
+              "account"
+            )}
+            {renderInputField("Email", editedData.email, "email", "email", {
+              disabled: true,
+            })}
+            {renderInputField(
+              "Số điện thoại",
+              editedData.phoneNumber,
+              "phoneNumber",
+              "phone",
+              { keyboardType: "phone-pad" }
+            )}
+            {renderInputField(
+              "Địa chỉ",
+              editedData.address,
+              "address",
+              "map-marker",
+              { multiline: true }
+            )}
           </Surface>
 
           <View style={styles.buttonContainer}>
@@ -219,11 +239,10 @@ const EditProfileScreen = ({ route, navigation }) => {
               style={styles.cancelButton}
               contentStyle={styles.buttonContent}
               disabled={loading}
-              theme={{ colors: { primary: '#007AFF' } }} // Sets text color to #007AFF
+              theme={{ colors: { primary: "#007AFF" } }} // Sets text color to #007AFF
             >
               Hủy thay đổi
             </Button>
-
           </View>
         </Animated.View>
       </ScrollView>
@@ -249,47 +268,47 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
   },
   avatarContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginVertical: 24,
   },
   avatarSurface: {
     borderRadius: 60,
     padding: 4,
-    backgroundColor: '#fff',
-    position: 'relative',
+    backgroundColor: "#fff",
+    position: "relative",
   },
   editAvatarButton: {
-    position: 'absolute',
+    position: "absolute",
     bottom: -10,
     right: -10,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 20,
     elevation: 4,
   },
   avatarHint: {
     marginTop: 16,
-    color: '#666',
+    color: "#666",
     fontSize: 12,
   },
   formContainer: {
     margin: 16,
     padding: 20,
     borderRadius: 15,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   inputContainer: {
     marginBottom: 16,
     borderRadius: 8,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   input: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   inputError: {
-    borderColor: '#B00020', // Material Design error color
+    borderColor: "#B00020", // Material Design error color
   },
   errorText: {
-    color: '#B00020',
+    color: "#B00020",
     fontSize: 12,
     marginTop: 4,
     marginLeft: 12,
@@ -304,29 +323,29 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     borderRadius: 8,
     elevation: 2,
-    backgroundColor: '#007AFF',
+    backgroundColor: "#007AFF",
   },
   cancelButton: {
     borderRadius: 8,
-    borderColor: '#007AFF',
+    borderColor: "#007AFF",
   },
   loadingOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
     zIndex: 999,
   },
   loadingCard: {
     padding: 24,
     borderRadius: 12,
-    alignItems: 'center',
-    backgroundColor: '#fff',
+    alignItems: "center",
+    backgroundColor: "#fff",
   },
   loadingText: {
     marginTop: 12,
     fontSize: 16,
-    color: '#666',
+    color: "#666",
   },
 });
 
