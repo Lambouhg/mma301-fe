@@ -173,50 +173,56 @@ const CartScreen = ({ navigation }) => {
 
   const createOrder = async () => {
     if (selectedItems.size === 0) {
-      Alert.alert(
-        "Thông báo",
-        "Vui lòng chọn ít nhất một sản phẩm để tạo đơn hàng."
-      );
-      return;
+        Alert.alert(
+            "Thông báo",
+            "Vui lòng chọn ít nhất một sản phẩm để tạo đơn hàng."
+        );
+        return;
     }
 
+    // Get selected items from the cart
     const selectedCartItems = cartItems.filter((item) =>
-      selectedItems.has(item.productId._id)
+        selectedItems.has(item.productId._id)
     );
 
-    // Kiểm tra tồn kho (stock) của sản phẩm
-    const outOfStockItems = selectedCartItems.filter(
-      (item) => item.productId.stock === 0
+    // Check if any selected product has insufficient stock
+    const insufficientStockItems = selectedCartItems.filter(
+        (item) => item.productId.stock < item.quantity
     );
 
-    if (outOfStockItems.length > 0) {
-      // Nếu có sản phẩm hết hàng
-      const outOfStockNames = outOfStockItems
-        .map((item) => item.productId.name)
-        .join(", ");
-      Alert.alert(
-        "Thông báo",
-        `Các sản phẩm sau đã hết hàng: ${outOfStockNames}. Vui lòng bỏ chọn hoặc kiểm tra lại sau.`
-      );
-      return;
+    if (insufficientStockItems.length > 0) {
+        // Show alert with items that don't have enough stock
+        const insufficientStockNames = insufficientStockItems
+            .map((item) => item.productId.name)
+            .join(", ");
+        Alert.alert(
+            "Thông báo",
+            `Các sản phẩm sau không đủ hàng: ${insufficientStockNames}. Vui lòng giảm số lượng hoặc kiểm tra lại sau.`
+        );
+        return; // Exit the function if any product has insufficient stock
     }
 
     try {
-      const response = await axios.post("https://mma301.onrender.com/orders", {
-        userId: user.id,
-        products: selectedCartItems.map((item) => ({
-          productId: item.productId._id,
-          quantity: item.quantity,
-        })),
-        totalPrice: calculateTotalPrice(selectedCartItems),
-        paymentMethod: "Credit Card",
-      });
-      return response.data._id;
+        // If all items have sufficient stock, proceed to create the order
+        const response = await axios.post("https://mma301.onrender.com/orders", {
+            userId: user.id,
+            products: selectedCartItems.map((item) => ({
+                productId: item.productId._id,
+                quantity: item.quantity,
+            })),
+            totalPrice: calculateTotalPrice(selectedCartItems),
+            paymentMethod: "Credit Card",
+        });
+
+        // Optionally handle the successful creation of the order
+        Alert.alert("Thông báo", "Đơn hàng đã được tạo thành công.");r
+        return response.data._id;
     } catch (error) {
-      console.error("Lỗi khi tạo đơn hàng:", error);
-      Alert.alert("Lỗi", "Không thể tạo đơn hàng. Vui lòng thử lại.");
+        console.error("Lỗi khi tạo đơn hàng:", error);
+        Alert.alert("Lỗi", "Không thể tạo đơn hàng. Vui lòng thử lại.");
     }
-  };
+};
+
 
   const calculateTotalPrice = (items) => {
     return items.reduce(
@@ -246,28 +252,28 @@ const CartScreen = ({ navigation }) => {
 
   const removeSelectedItems = async () => {
     if (selectedItems.size === 0) {
-      Alert.alert("Thông báo", "Vui lòng chọn ít nhất một sản phẩm để xoá.");
-      return;
+        Alert.alert("Thông báo", "Vui lòng chọn ít nhất một sản phẩm để xoá.");
+        return;
     }
 
     try {
-      await Promise.all(
-        Array.from(selectedItems).map((itemId) =>
-          axios.delete(`https://mma301.onrender.com/cart/${user.id}/${itemId}`)
-        )
-      );
+        // Sequentially delete each selected item
+        for (const itemId of selectedItems) {
+            await axios.delete(`https://mma301.onrender.com/cart/${user.id}/${itemId}`);
+        }
 
-      // Cập nhật lại danh sách sản phẩm trong giỏ hàng
-      setCartItems((prevItems) =>
-        prevItems.filter((item) => !selectedItems.has(item.productId._id))
-      );
-      setSelectedItems(new Set()); // Bỏ chọn tất cả sản phẩm
-      Alert.alert("Thông báo", "Xoá sản phẩm thành công.");
+        // Update cart items and clear selected items
+        setCartItems((prevItems) =>
+            prevItems.filter((item) => !selectedItems.has(item.productId._id))
+        );
+        setSelectedItems(new Set()); // Deselect all items
+        Alert.alert("Thông báo", "Xoá sản phẩm thành công.");
     } catch (error) {
-      console.error("Lỗi khi xoá sản phẩm:", error);
-      Alert.alert("Lỗi", "Không thể xoá sản phẩm. Vui lòng thử lại.");
+        console.error("Lỗi khi xoá sản phẩm:", error);
+        Alert.alert("Lỗi", "Không thể xoá sản phẩm. Vui lòng thử lại.");
     }
-  };
+};
+
 
   return (
     <View style={styles.container}>
