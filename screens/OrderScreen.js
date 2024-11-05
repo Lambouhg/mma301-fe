@@ -141,8 +141,9 @@ const OrderScreen = ({ route, navigation }) => {
               <MaterialIcons name="shopping-basket" size={16} color="#666" />
               <Text style={styles.productQuantity}>{item.quantity}</Text>
             </View>
+            <Text style={styles.productsize}>{item.productId.sizes}</Text>
             <Text style={styles.productPrice}>
-              {totalProductPrice.toLocaleString('vi-VN')} 0VND
+              {totalProductPrice.toLocaleString('vi-VN')} VND
             </Text>
           </View>
         </View>

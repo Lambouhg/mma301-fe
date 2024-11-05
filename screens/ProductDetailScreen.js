@@ -64,7 +64,7 @@ const ProductDetailScreen = ({ route, navigation }) => {
         <View style={styles.infoCard}>
           <View style={styles.brandRow}>
             <Text style={styles.brand}>{product.brand}</Text>
-            {product.stock && (
+            {product.stock !== undefined && (
               <View style={styles.stockBadge}>
                 <Text style={styles.stockText}>{product.stock} in stock</Text>
               </View>
