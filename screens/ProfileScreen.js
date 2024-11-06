@@ -26,7 +26,6 @@ const ProfileScreen = ({ navigation, route }) => {
       );
       setProfileData(response.data);
     } catch (error) {
-      Alert.alert("Error", "Failed to fetch profile data");
     } finally {
       setLoading(false);
     }
