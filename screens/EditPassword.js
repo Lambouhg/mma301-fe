@@ -56,7 +56,6 @@ const EditPasswordScreen = ({ navigation }) => {
         { text: "OK", onPress: () => navigation.goBack() },
       ]);
     } catch (error) {
-      console.error("Error updating password:", error);
       Alert.alert("Thông báo", "Cập nhật mật khẩu không thành công, vui lòng thử lại.", [
         { text: "Đã hiểu" },
       ]);
