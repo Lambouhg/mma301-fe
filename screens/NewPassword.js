@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { View, StyleSheet, Alert, ImageBackground } from "react-native";
-import { TextInput, Button, Text, Card } from "react-native-paper";
+import { TextInput, Button, Text, Card, useTheme } from "react-native-paper";
 import { useAuth } from "../context/AuthContext";
 
 const NewPasswordScreen = ({ route, navigation }) => {
   const { resetPassword } = useAuth();
-  const { email } = route.params; // Nhận email từ params
+  const { email } = route.params;
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const theme = useTheme();
@@ -68,6 +68,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
   },
+  innerContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
   container: {
     padding: 20,
     marginHorizontal: 16,
@@ -76,6 +80,18 @@ const styles = StyleSheet.create({
   },
   input: {
     marginBottom: 5,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: "#666",
+    textAlign: "center",
+    marginBottom: 24,
   },
   card: {
     padding: 8,
@@ -100,36 +116,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 5,
     color: "#333",
-  },
-  subtitle: {
-    fontSize: 16,
-    textAlign: "center",
-    color: "#666",
-    marginBottom: 20,
-  },
-  inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 10,
-    borderRadius: 5,
-    overflow: "hidden",
-  },
-  input: {
-    flex: 1,
-    marginLeft: 10,
-    backgroundColor: "white",
-  },
-  button: {
-    marginTop: 20,
-    borderRadius: 5,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  buttonContent: {
-    paddingVertical: 8,
   },
 });
 
